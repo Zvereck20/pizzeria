@@ -5,6 +5,7 @@ export interface Ingredient {
   name: string;
   price: number;
   image: string;
+  available: boolean;
 }
 
 const ingredientsApi = api.injectEndpoints({

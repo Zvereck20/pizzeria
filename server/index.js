@@ -5,8 +5,10 @@ import cookieParser from "cookie-parser";
 import path from "path";
 import productRoutes from "./routes/products.js";
 import ingredientRoutes from "./routes/ingredients.js";
-import orderRoutes from "./routes/order.js";
-import storeRoutes from "./routes/store.js";
+import orderRoutes from "./routes/orders.js";
+import storeRoutes from "./routes/stores.js";
+import bannerRoutes from "./routes/banners.js";
+import addressRoutes from "./routes/address.js";
 
 const app = express();
 const PORT = 5000;
@@ -25,6 +27,8 @@ app.use("/api/products", productRoutes);
 app.use("/api/ingredients", ingredientRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/stores", storeRoutes);
+app.use("/api/banners", bannerRoutes);
+app.use("/api/address", addressRoutes);
 
 // URI из docker-compose.yml
 const MONGO_URI = "mongodb://mongo:27017/pizza-db";

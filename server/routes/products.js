@@ -1,17 +1,28 @@
 import express from "express";
 import Product from "../models/Product.js";
 import path from "path";
-import fs from "fs";
+import { promises as fs } from "fs";
 import { upload } from "../middlewares/upload.js";
+import { parseJsonFields } from "../middlewares/parseJsonFields.js";
+import { toObjectIdArray } from "../middlewares/toObjectIdArray.js";
 import { createProductSchema, updateProductSchema } from "../validators/product.js";
+import { mapImages } from "../utils/mapImages.js";
 
 const router = express.Router();
 
 // GET api/products
 router.get("/", async (req, res) => {
   try {
-    const products = await Product.find().populate("ingredients"); //возможно убрать populate
-    res.json(products);
+    const products = await Product.find().populate("ingredients");
+
+    const data = products.map((p) =>
+      mapImages(p, req, [
+        { path: "", field: "image" },
+        { path: "ingredients", field: "image" },
+      ])
+    );
+
+    res.json(data);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
@@ -21,13 +32,22 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate("ingredients");
-    res.json(product);
+
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
+    const data = mapImages(product, req, [
+      { path: "", field: "image" },
+      { path: "ingredients", field: "image" },
+    ]);
+
+    res.json(data);
   } catch (err) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
 // POST api/products
+// router.post("/", upload.single("image"), parseJsonFields(["ingredients"]), toObjectIdArray("ingredients"), async (req, res) => {
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     const ingredients = [req.body.ingredients];
@@ -49,10 +69,12 @@ router.post("/", upload.single("image"), async (req, res) => {
 });
 
 // PATCH api/products/id
+// router.patch("/:id", upload.single("image"), parseJsonFields(["ingredients"]), toObjectIdArray("ingredients"), async (req, res) => {
 router.patch("/:id", upload.single("image"), async (req, res) => {
   try {
+    const ingredients = [req.body.ingredients];
     const image = req.file?.filename;
-    const body = { ...req.body };
+    const body = ingredients ? { ...req.body, ingredients } : { ...req.body };
 
     if (image) body.image = image;
 

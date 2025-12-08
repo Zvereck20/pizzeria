@@ -1,16 +1,20 @@
 import express from "express";
 import Ingredient from "../models/Ingredient.js";
 import path from "path";
-import fs from "fs";
+import { promises as fs } from "fs";
 import { upload } from "../middlewares/upload.js";
-import { createIngredientSchema, updateIngredientSchema } from "../validators/Ingredient.js";
+import { createIngredientSchema, updateIngredientSchema } from "../validators/ingredient.js";
+import { mapImages } from "../utils/mapImages.js";
 
 const router = express.Router();
 
 // GET api/ingredients
 router.get("/", async (req, res) => {
   try {
-    const ingredients = await Ingredient.find();
+    const data = await Ingredient.find();
+
+    const ingredients = data.map((ing) => mapImages(ing, req, [{ path: "", field: "image" }]));
+
     res.json(ingredients);
   } catch (err) {
     res.status(500).json({ message: "Server error" });
@@ -20,8 +24,13 @@ router.get("/", async (req, res) => {
 // GET api/ingredients/id
 router.get("/:id", async (req, res) => {
   try {
-    const Ingredient = await Ingredient.findById(req.params.id);
-    res.json(Ingredient);
+    const data = await Ingredient.findById(req.params.id);
+
+    if (!data) return res.status(404).json({ message: "Ingredient not found" });
+
+    const ingredient = mapImages(data, req, [{ path: "", field: "image" }]);
+
+    res.json(ingredient);
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
@@ -80,18 +89,14 @@ router.delete("/:id", async (req, res) => {
       const filePath = path.resolve("uploads", ingredient.image);
 
       try {
-        fs.unlink(filePath, (err) => {
-          if (err) {
-            console.error("Cannot remove file:", filePath, err.message);
-          }
-        });
+        await fs.unlink(filePath);
       } catch (err) {
         console.warn(`Cannot remove file: ${filePath}`, err.message);
       }
     }
 
     await ingredient.deleteOne();
-    res.status(201).json({ message: `Ingredient ${req.params.id} was deleted` });
+    res.status(200).json({ message: `Ingredient ${req.params.id} was deleted` });
   } catch (err) {
     res.status(400).json({ message: "Server error", error: err.message });
   }

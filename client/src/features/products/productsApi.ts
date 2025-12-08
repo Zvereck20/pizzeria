@@ -1,5 +1,5 @@
-import { api } from "../../app/api";
-import type { Ingredient } from "../ingredients/ingredientsApi";
+import { api } from "@/app/api";
+import type { Ingredient } from "@/features";
 
 export interface Product {
   _id: string;

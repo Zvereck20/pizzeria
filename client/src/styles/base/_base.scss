@@ -1,0 +1,25 @@
+.body {
+  min-height: 100%;
+  font-family: $font-base;
+  font-size: 14px;
+  line-height: normal;
+  display: grid;
+  grid-template-rows: min-content 1fr min-content;
+  align-content: start;
+  margin: 0;
+  padding: 0;
+  background-color: $color-white;
+  color: $color-black;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.visually-hidden {
+  width: 0;
+  height: 0;
+  font-size: 0;
+  line-height: 0;
+  color: transparent;
+  background-color: transparent;
+  opacity: 0;
+}

@@ -1,0 +1,18 @@
+.cart-header {
+  padding-right: 40px;
+  display: block;
+  position: relative;
+
+  &__summary {
+    position: absolute;
+    width: fit-content;
+    padding: 3px 8px;
+    background-color: $color-main;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 500;
+    color: $color-white;
+    top: -12px;
+    right: 0;
+  }
+}

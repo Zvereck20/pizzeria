@@ -1,57 +1,38 @@
 import type { FC } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useGetProductsQuery } from "./features/products/productsApi";
-import { useGetStoresQuery } from "./features/stores/storeApi";
+import { Header, Footer } from "@/components";
 
-// import Home from "./pages/Home";
-// import AdminPage from "./pages/AdminPage";
-// import CheckoutPage from "./pages/CheckoutPage";
+// import { useGetStoresQuery } from "./features/stores/storeApi";
+
+import { DataBootstrap } from "./app/DataBootstrap";
+import { Home, CheckoutPage } from "@/pages";
+import { CartProvider, useGetProductsQuery } from "@/features";
 
 export const App: FC = () => {
   const { data, isLoading, error } = useGetProductsQuery();
 
-  const { data: dataOrder } = useGetStoresQuery();
+  // const { data: dataOrder } = useGetStoresQuery();
 
   if (isLoading) console.log("Is loading Now");
   if (error) console.log(error);
 
-  dataOrder?.forEach((el) => {
-    console.log(el);
-  });
+  // dataOrder?.forEach((el) => {
+  //   console.log(el);
+  // });
 
   return (
-    // <BrowserRouter>
-    //   <Routes>
-    //     <Route path="/" element={<Home />} />
-    //     <Route path="/admin" element={<AdminPage />} />
-    //     <Route path="/checkout" element={<CheckoutPage />} />
-    //   </Routes>
-    // </BrowserRouter>
-    <>
-      <div>Hello World</div>
-      <ul>
-        {data?.map(({ _id, name, price, image, category, description, ingredients }) => (
-          <li key={_id}>
-            {name}
-            <br />
-            {price}
-            <br />
-            {description}
-            <br />
-            <img src={`http://localhost:5000/uploads/${image}`} alt={name} width="100px" height="100px" />
-            <br />
-            {category}
-            <br />
-            {ingredients.map((i) => (
-              <div key={i._id}>
-                <p>{i.name}</p>
-                <p>{i.price}</p>
-                <img src={`http://localhost:5000/uploads/${i.image}`} alt={name} width="100px" height="100px" />
-              </div>
-            ))}
-          </li>
-        ))}
-      </ul>
-    </>
+    <BrowserRouter>
+      <CartProvider>
+        <div className="container">
+          <DataBootstrap />
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/cart" element={<CheckoutPage />} />
+          </Routes>
+          <Footer />
+        </div>
+      </CartProvider>
+    </BrowserRouter>
   );
 };
