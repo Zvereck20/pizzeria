@@ -7,11 +7,7 @@ import { Logo } from "@/components/assets";
 
 export const Header: FC = () => {
   const compact = useCompactHeader(12);
-  const infor = useParams();
   const match = !useMatch("/");
-
-  console.log("params", infor);
-  console.log("match", match);
 
   return (
     <header className={`header ${compact ? "header--shadow" : ""}`} role="banner">

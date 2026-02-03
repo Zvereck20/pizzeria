@@ -9,12 +9,24 @@ export const CartSummary: FC = () => {
     <>
       {total ? (
         <a className="cart-header" href="/cart" aria-label="Корзина">
-          <img src="/images/basket.png" width={47} height={47} alt="корзина" />
+          <img
+            className="cart-header__img"
+            src="/images/basket.png"
+            width={47}
+            height={47}
+            alt="корзина"
+          />
           <div className="cart-header__summary">{formatPrice(total)}</div>
         </a>
       ) : (
         <div className="cart-header cart-header--empty">
-          <img src="/images/basket.png" width={47} height={47} alt="корзина" />
+          <img
+            className="cart-header__img"
+            src="/images/basket.png"
+            width={47}
+            height={47}
+            alt="корзина"
+          />
           <div className="cart-header__summary">{formatPrice(total)}</div>
         </div>
       )}

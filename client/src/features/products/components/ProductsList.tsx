@@ -2,16 +2,12 @@ import type { FC } from "react";
 import type { Product } from "@/features";
 import { ProductCard } from "./ProductCard";
 
-interface ProductsListProps {
-  products: Product[];
-}
-
-export const ProductsList: FC<ProductsListProps> = ({ products }) => {
+export const ProductsList: FC<{ products: Product[] }> = ({ products }) => {
   return (
-    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <ul className="products__container">
       {products.map((p) => (
         <ProductCard key={p._id} product={p} />
       ))}
-    </div>
+    </ul>
   );
 };

@@ -9,12 +9,12 @@ import { Home, CheckoutPage } from "@/pages";
 import { CartProvider, useGetProductsQuery } from "@/features";
 
 export const App: FC = () => {
-  const { data, isLoading, error } = useGetProductsQuery();
+  // const { data, isLoading, error } = useGetProductsQuery();
 
   // const { data: dataOrder } = useGetStoresQuery();
 
-  if (isLoading) console.log("Is loading Now");
-  if (error) console.log(error);
+  // if (isLoading) console.log("Is loading Now");
+  // if (error) console.log(error);
 
   // dataOrder?.forEach((el) => {
   //   console.log(el);

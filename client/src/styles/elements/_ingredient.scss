@@ -1,0 +1,16 @@
+.ingredient {
+  flex-basis: 25%;
+  outline: 1px solid green;
+
+  &__image {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+  }
+
+  &__title {
+    margin: 0;
+    padding: 10px 0;
+    font-size: 12px;
+  }
+}

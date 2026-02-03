@@ -1,32 +1,31 @@
 import type { FC } from "react";
 import { CartItemCard } from "./CartItemCard";
-import { useCart } from "@/features";
-import { Separator } from "@/components";
 import { formatPrice } from "@/lib/format";
+import { type CartItem } from "../types";
 
-export const CartList: FC = () => {
-  const { items, total } = useCart();
+interface CartListProps {
+  items: CartItem[];
+  total: number;
+}
 
+export const CartList: FC<CartListProps> = ({ items, total }) => {
   if (!items.length) {
-    return <div className="rounded-xl border bg-white p-6 text-center text-sm text-muted-foreground ">Ваша корзина пуста</div>;
+    return <div className="cart__empty">Ваша корзина пуста</div>;
   }
 
   return (
-    // <div className={className}>
     <div>
-      <h2 className="mb-4 text-2xl font-bold">Состав заказа:</h2>
-      <div className="space-y-3">
+      <h2 className="cart__heading">Состав заказа:</h2>
+      <ul className="cart__list">
         {items.map((it) => (
           <CartItemCard key={it.uid} item={it} />
         ))}
-      </div>
+      </ul>
 
-      <Separator className="my-4" />
-
-      <div className="flex flex-wrap justify-between gap-3">
-        <div className="text-lg font-semibold">
-          Итого: <span className="tabular-nums">{formatPrice(total)}</span>
-        </div>
+      <div className="cart__summary">
+        <p>
+          Итого: <span className="cart__summary-nums">{formatPrice(total)}</span>
+        </p>
       </div>
     </div>
   );

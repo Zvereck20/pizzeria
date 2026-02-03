@@ -1,102 +1,130 @@
 import type { FC } from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { closeProductModal } from "../state/productsUISlice";
 import {
   selectSelectedProductId,
   selectProductById,
   selectIngredients,
+  statusProductModal,
 } from "../state/selectors";
+import type { RootState } from "@/app/store";
 import { formatPrice } from "@/lib/format";
-// import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, Button } from "@/components";
-import { IngredientsPicker, useCart } from "@/features";
+import { type Ingredient, IngredientsPicker, useCart } from "@/features";
 import type { CartIngredient } from "@/features/cart/types";
+import ReactModal from "react-modal";
+import { Button } from "@/components";
 
 export const ProductModal: FC = () => {
   const dispatch = useDispatch();
+  const statusModal = useSelector(statusProductModal);
   const productId = useSelector(selectSelectedProductId);
-  const product = useSelector(useMemo(() => selectProductById(productId), [productId]));
+  const product = useSelector((s: RootState) => selectProductById(productId)(s));
   const allIngs = useSelector(selectIngredients);
   const { addItem } = useCart();
 
-  const [selected, setSelected] = useState<string[]>(
-    () => product?.ingredients?.map((i: any) => (typeof i === "string" ? i : i._id)) ?? []
-  );
-  const key = productId ?? "closed";
+  const [isOpen, setIsOpen] = useState(false);
+  const [productIngredients, setProductIngredients] = useState<Ingredient[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
 
   const total = useMemo(() => {
     const base = product?.price ?? 0;
     const extra = selected
-      .map((id) => allIngs.find((i) => i._id === id))
+      .map((id) => product?.ingredients.find((i) => i._id === id))
       .filter(Boolean)
       .reduce((sum, i) => sum + (i!.price || 0), 0);
     return base + extra;
   }, [product, selected, allIngs]);
 
+  useEffect(() => {
+    if (product && statusModal) {
+      setIsOpen(true);
+      setProductIngredients(product.ingredients);
+    } else {
+      setIsOpen(false);
+      setSelected([]);
+    }
+
+    return () => {
+      setIsOpen(false);
+      setSelected([]);
+    };
+  }, [product, statusModal]);
+
+  const startClose = () => {
+    setIsOpen(false);
+    dispatch(closeProductModal());
+  };
+
   const onOrder = () => {
-    if (!product) return false;
-
-    const ingredients: CartIngredient[] = [];
-
-    const selectedIngredients = selected.map((id) => allIngs.find((i) => i._id === id));
-
-    selectedIngredients.forEach((el) => {
-      const ingredient = {
-        _id: el!._id,
-        name: el!.name,
-        price: el!.price,
-      };
-
-      ingredients.push(ingredient);
-    });
+    if (!product) return;
+    const ingredients: CartIngredient[] = selected
+      .map((id) => allIngs.find((i) => i._id === id))
+      .filter(Boolean)
+      .map((el) => ({ _id: el!._id, name: el!.name, price: el!.price }));
 
     addItem({
       ingredients,
       name: product.name,
       image: product.image!,
       productId: product._id,
-      productPrice: product?.price,
+      productPrice: product.price,
       quantity: 1,
     });
 
-    dispatch(closeProductModal());
+    startClose();
   };
 
-  const onOpenChange = (open: boolean) => {
-    if (!open) dispatch(closeProductModal());
-  };
+  if (!product) {
+    return <ReactModal isOpen={false}></ReactModal>;
+  }
 
-  // return (
-  //   <Dialog open={!!productId} onOpenChange={onOpenChange}>
-  //     {product && (
-  //       <DialogContent key={key} className="sm:max-w-[720px]">
-  //         <DialogHeader>
-  //           <DialogTitle className="flex items-center gap-2">
-  //             {product.name}
-  //             {/* {product.isHit && <Badge>Хит</Badge>} */}
-  //           </DialogTitle>
-  //         </DialogHeader>
+  return (
+    <ReactModal
+      isOpen={isOpen}
+      onRequestClose={startClose}
+      className={"modal__content"}
+      overlayClassName={"modal__overlay"}
+      closeTimeoutMS={1000}
+      preventScroll={true}
+    >
+      <div className="product-modal__header">
+        <h2 className="product-modal__title">{product.name}</h2>
+        <button
+          type="button"
+          className="modal__close"
+          aria-label="Закрыть"
+          onClick={startClose}
+        >
+          ×
+        </button>
+      </div>
 
-  //         <div className="grid gap-4 md:grid-cols-[280px_1fr]">
-  //           {/* Изображение */}
-  //           <div className="rounded-lg border bg-muted/20 p-2">
-  //             <div className="aspect-square overflow-hidden rounded-md bg-white">
-  //               <img src={product.image} alt={product.name} className="h-full w-full object-contain" />
-  //             </div>
-  //           </div>
+      <div className="product-modal__body">
+        <div className="product-modal__image">
+          <img src={product.image} alt={product.name} />
+        </div>
 
-  //           <IngredientsPicker items={allIngs} selectedIds={selected} onChange={setSelected} />
-  //         </div>
+        <div className="product-modal__wrap">
+          <IngredientsPicker
+            items={productIngredients}
+            selectedIds={selected}
+            onChange={setSelected}
+          />
+        </div>
+      </div>
 
-  //         <DialogFooter className="flex items-center justify-between gap-4">
-  //           <div className="text-sm text-muted-foreground">
-  //             Базовая цена: <span className="font-medium text-foreground">{formatPrice(product.price || 0)}</span>
-  //           </div>
-  //           <Button onClick={onOrder}>Заказать · {formatPrice(total)}</Button>
-  //         </DialogFooter>
-  //       </DialogContent>
-  //     )}
-  //   </Dialog>
-  // );
-  return <h2>Halo probuct modal</h2>;
+      <div className="product-modal__footer">
+        <div className="product-modal__base">
+          Базовая цена:{" "}
+          <span className="product-modal__base-value">
+            {formatPrice(product.price || 0)}
+          </span>
+        </div>
+        <Button type="button" variant="classic" onClick={onOrder}>
+          Заказать · {formatPrice(total)}
+        </Button>
+      </div>
+    </ReactModal>
+  );
 };

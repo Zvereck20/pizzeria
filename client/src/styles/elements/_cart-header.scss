@@ -3,6 +3,11 @@
   display: block;
   position: relative;
 
+  &__img {
+    width: 47px;
+    height: 47px;
+  }
+
   &__summary {
     position: absolute;
     width: fit-content;

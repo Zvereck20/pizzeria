@@ -1,0 +1,13 @@
+.products {
+  padding-top: 50px;
+
+  &__heading {
+    padding-bottom: 20px;
+  }
+
+  &__container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+  }
+}

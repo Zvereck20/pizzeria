@@ -2,9 +2,9 @@ import type { FC } from "react";
 import { useState } from "react";
 import { Controller, type Control } from "react-hook-form";
 import type { CheckoutFormValues } from "../validation";
-import { AddressQuickModal } from "./AddressQuickModal";
+import { AddressModal } from "./AddressModal";
 import type { AddressValue } from "./types";
-// import { Input, Label } from "@/components";
+import { Input } from "@/components";
 
 type Props = { control: Control<CheckoutFormValues>; disabled?: boolean };
 
@@ -20,21 +20,21 @@ export const CheckoutAddressField: FC<Props> = ({ control, disabled }) => {
         const display = value?.display ?? "";
         return (
           <div className="space-y-2">
-            {/* <Label>Адрес доставки</Label> */}
+            <label>Адрес доставки</label>
             <button
               type="button"
               className="block w-full"
               onClick={() => setOpen(true)}
               disabled={disabled}
             >
-              {/* <Input value={display} placeholder="Город, улица, дом" readOnly /> */}
+              <Input value={display} placeholder="Город, улица, дом" readOnly />
             </button>
 
             {fieldState.error && (
               <p className="text-sm text-red-600">{fieldState.error.message}</p>
             )}
 
-            <AddressQuickModal
+            <AddressModal
               open={open}
               onOpenChange={setOpen}
               defaultValue={value ?? undefined}

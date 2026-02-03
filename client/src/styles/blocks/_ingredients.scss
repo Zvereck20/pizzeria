@@ -1,0 +1,12 @@
+.ingredients {
+  padding-left: 20px;
+
+  &__wrap {
+    max-height: 370px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: space-between;
+    overflow-y: scroll;
+  }
+}

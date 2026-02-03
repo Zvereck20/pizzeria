@@ -1,5 +1,4 @@
 import type { FC } from "react";
-import { Minus, Plus } from "lucide-react";
 import { Button } from "@/components";
 
 type Props = {
@@ -9,13 +8,13 @@ type Props = {
 };
 
 export const QuantityControl: FC<Props> = ({ value, onInc, onDec }) => (
-  <div className="inline-flex items-center gap-2">
-    <Button type="button" size="icon" variant="outline" onClick={onDec} aria-label="Уменьшить">
-      <Minus className="h-4 w-4" />
+  <div className="quantity">
+    <Button type="button" variant="classic" onClick={onDec} aria-label="Уменьшить">
+      -
     </Button>
-    <span className="w-8 text-center tabular-nums">{value}</span>
-    <Button type="button" size="icon" variant="outline" onClick={onInc} aria-label="Увеличить">
-      <Plus className="h-4 w-4" />
+    <span className="quantity__value">{value}</span>
+    <Button type="button" variant="classic" onClick={onInc} aria-label="Увеличить">
+      +
     </Button>
   </div>
 );

@@ -4,12 +4,12 @@ import type { RootState } from "@/app/store";
 import { ProductsList } from "./ProductsList";
 import { categoryLabels, type Category } from "../constants/categories";
 
-export const ProductsSection = ({ category }: { category: Category }) => {
+export const ProductsSection: FC<{ category: Category }> = ({ category }) => {
   const all = useSelector((s: RootState) => s.productsData.items);
   const products = all.filter((p) => p.category === category);
 
   return (
-    <section className={`products products--${category}`}>
+    <section className={`products products--${category}`} id={category}>
       <h2 className="products__heading">{categoryLabels[category]}</h2>
 
       {products.length ? (

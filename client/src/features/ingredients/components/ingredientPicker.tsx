@@ -1,23 +1,16 @@
 import type { FC } from "react";
-import { ScrollArea, Separator } from "@/components";
-import { IngredientsContainer, type IngredientView } from "./IngredientContainer";
+import { IngredientItem, type IngredientItemProps } from "./IngredientItem";
 
 export type IngredientsPickerProps = {
-  title?: string;
-  items: IngredientView[];
+  items: Omit<IngredientItemProps, "checked" | "onToggle">[];
   selectedIds: string[];
   onChange: (ids: string[]) => void;
-  className?: string;
-  scrollHeightClass?: string; // например "h-[260px]"
 };
 
 export const IngredientsPicker: FC<IngredientsPickerProps> = ({
-  title = "Ингредиенты",
   items,
   selectedIds,
   onChange,
-  className,
-  scrollHeightClass = "h-[260px]",
 }) => {
   const onToggle = (id: string) => {
     if (selectedIds.includes(id)) {
@@ -28,12 +21,23 @@ export const IngredientsPicker: FC<IngredientsPickerProps> = ({
   };
 
   return (
-    <div className={className}>
-      <h4 className="mb-2 text-sm font-semibold">{title}</h4>
-      <ScrollArea className={`${scrollHeightClass} pr-2`}>
-        <IngredientsContainer items={items} selectedIds={selectedIds} onToggle={onToggle} />
-      </ScrollArea>
-      <Separator className="mt-3" />
+    <div className="ingredients">
+      <h3 className="ingredients__title">Ингредиенты</h3>
+
+      <div className="ingredients__wrap">
+        {items.map((ing) => (
+          <IngredientItem
+            key={ing._id}
+            _id={ing._id}
+            name={ing.name}
+            image={ing.image}
+            price={ing.price ?? 0}
+            available={ing.available}
+            checked={selectedIds.includes(ing._id)}
+            onToggle={onToggle}
+          />
+        ))}
+      </div>
     </div>
   );
 };

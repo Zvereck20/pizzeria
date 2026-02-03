@@ -1,0 +1,22 @@
+.cart {
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__img {
+  }
+
+  &__remove {
+    svg {
+      stroke: $color-while;
+    }
+  }
+}
