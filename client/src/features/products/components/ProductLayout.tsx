@@ -1,11 +1,11 @@
-import { categoryOrder } from "../constants/categories";
+import { categoryLabels } from "../constants/categories";
 import { ProductsSection } from "./ProductsSection";
 
 export const ProductLayout = () => {
   return (
     <>
-      {categoryOrder.map((cat) => (
-        <ProductsSection key={cat} category={cat} />
+      {categoryLabels.map(({ id, label }) => (
+        <ProductsSection key={id} category={id} label={label} />
       ))}
     </>
   );

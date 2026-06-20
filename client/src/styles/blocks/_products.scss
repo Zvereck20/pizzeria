@@ -8,6 +8,7 @@
   &__container {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
+    align-items: stretch;
     gap: 20px;
   }
 }

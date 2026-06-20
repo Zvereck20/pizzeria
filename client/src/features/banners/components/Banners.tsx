@@ -1,16 +1,11 @@
 import { FC } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/app/store";
-import { Slider } from "@/components";
+import { ErrorBlock, Slider } from "@/components";
 import { useGetBannersQuery } from "../bannersApi";
 
 export const Banners: FC = () => {
-  // const banners = useSelector((s: RootState) => s.banners);
-  const { data, isSuccess, isError } = useGetBannersQuery();
+  const { data, isError } = useGetBannersQuery();
 
-  if (data === undefined) {
-    return <div>Is Error</div>;
-  }
+  if (isError) return <ErrorBlock />;
 
   return (
     <section className="banners">

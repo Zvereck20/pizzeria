@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes, FC } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant: "classic" | "ingredients" | "add-card" | "submit";
+  variant: "classic" | "ingredients" | "add-card" | "submit" | "order";
 }
 
 export const Button: FC<ButtonProps> = ({

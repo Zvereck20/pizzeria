@@ -2,8 +2,8 @@ import type { FC } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { Button, Input, Textarea } from "@/components";
 import { useDebounced } from "@/hooks/useDebounce";
-import { fetchAddressSuggest } from "./addressApi";
-import type { AddressValue } from "./types";
+import { fetchAddressSuggest } from "../addressApi";
+import type { AddressValue } from "../types";
 import ReactModal from "react-modal";
 
 type Props = {
@@ -127,9 +127,6 @@ export const AddressModal: FC<Props> = ({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Например: Москва, Тверская, д. 10, кв. 25"
-              // onFocus={() => {
-              //   // при фокусе, если нет точного совпадения — показывать список
-              // }}
             />
             {list.length > 0 && (
               <div className="delivery__list">
@@ -179,7 +176,7 @@ export const AddressModal: FC<Props> = ({
         </div>
 
         <div className="delivery__wrap">
-          <Button variant="classic" onClick={() => onOpenChange(false)}>
+          <Button variant="add-card" onClick={() => onOpenChange(false)}>
             Отмена
           </Button>
           <Button variant="classic" onClick={handleConfirm} disabled={!canConfirm}>

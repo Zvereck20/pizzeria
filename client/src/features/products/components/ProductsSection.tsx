@@ -1,16 +1,25 @@
-import type { FC } from "react";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/app/store";
+import { useEffect, useMemo, type FC } from "react";
 import { ProductsList } from "./ProductsList";
-import { categoryLabels, type Category } from "../constants/categories";
+import { Category } from "../constants/categories";
+import { Product, useGetProductsQuery } from "../productsApi";
+import { ErrorBlock } from "@/components";
 
-export const ProductsSection: FC<{ category: Category }> = ({ category }) => {
-  const all = useSelector((s: RootState) => s.productsData.items);
-  const products = all.filter((p) => p.category === category);
+export const ProductsSection: FC<{ category: Category; label: string }> = ({
+  category,
+  label,
+}) => {
+  const { data, isError } = useGetProductsQuery();
+
+  const products = useMemo(() => {
+    if (!data) return [];
+    return data.filter((p) => p.category === category);
+  }, [data, category]);
+
+  if (isError) return <ErrorBlock />;
 
   return (
     <section className={`products products--${category}`} id={category}>
-      <h2 className="products__heading">{categoryLabels[category]}</h2>
+      <h2 className="products__heading">{label}</h2>
 
       {products.length ? (
         <ProductsList products={products} />

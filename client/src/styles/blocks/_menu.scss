@@ -1,11 +1,28 @@
 .menu {
   margin: 0 auto;
-  padding: 20px 0;
-  max-width: 1600px;
+  padding-top: 40px;
+  max-width: 85%;
 
   &__list {
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
+
+  &__link {
+    display: block;
+    padding: 10px 20px;
+    background-color: $color-white;
+    border-radius: 16px;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 22px;
+    border: 1px solid $color-white;
+    transition: 0.5s;
+
+    &:hover {
+      color: $color-white;
+      background-color: $color-salad;
+    }
   }
 }

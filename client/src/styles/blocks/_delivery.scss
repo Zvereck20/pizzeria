@@ -1,3 +1,47 @@
 .delivery {
-  display: flex;
+  min-width: 500px;
+
+  label {
+    margin-bottom: 15px;
+    display: block;
+    font-size: 16px;
+  }
+
+  input {
+    margin-bottom: 15px;
+    padding: 5px 10px;
+    border-radius: 16px;
+  }
+
+  &__container {
+    padding-top: 20px;
+  }
+
+  &__address {
+    padding-bottom: 15px;
+
+    input {
+      width: 100%;
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  &__item {
+    background-color: $color-salad;
+    color: $color-white;
+    border-radius: 16px;
+    cursor: pointer;
+  }
+
+  &__wrap {
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
 }

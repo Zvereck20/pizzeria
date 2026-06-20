@@ -1,4 +1,8 @@
 // export * from './AdminPage';
 export * from "./CheckoutPage";
 export * from "./Home";
-export * from "./config";
+export * from "./SucessPage";
+export * from "./StoresPage";
+export * from "./AboutPage";
+export * from "./VacanciesPage";
+export * from "./NotFound";

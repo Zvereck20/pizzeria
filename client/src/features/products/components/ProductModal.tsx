@@ -4,27 +4,36 @@ import { useSelector, useDispatch } from "react-redux";
 import { closeProductModal } from "../state/productsUISlice";
 import {
   selectSelectedProductId,
-  selectProductById,
-  selectIngredients,
+  // selectIngredients,
   statusProductModal,
 } from "../state/selectors";
 import type { RootState } from "@/app/store";
 import { formatPrice } from "@/lib/format";
-import { type Ingredient, IngredientsPicker, useCart } from "@/features";
+import {
+  type Ingredient,
+  IngredientsPicker,
+  ProductInformation,
+  useCart,
+  useGetProductByIdQuery,
+} from "@/features";
 import type { CartIngredient } from "@/features/cart/types";
 import ReactModal from "react-modal";
 import { Button } from "@/components";
+import { skipToken } from "@reduxjs/toolkit/query";
+import toast from "react-hot-toast";
 
 export const ProductModal: FC = () => {
   const dispatch = useDispatch();
   const statusModal = useSelector(statusProductModal);
   const productId = useSelector(selectSelectedProductId);
-  const product = useSelector((s: RootState) => selectProductById(productId)(s));
-  const allIngs = useSelector(selectIngredients);
+  const { data: product } = useGetProductByIdQuery(productId ?? skipToken);
   const { addItem } = useCart();
+
+  console.log(product, "product");
 
   const [isOpen, setIsOpen] = useState(false);
   const [productIngredients, setProductIngredients] = useState<Ingredient[]>([]);
+  const [productInfromation, setProductInformation] = useState<ProductInformation>();
   const [selected, setSelected] = useState<string[]>([]);
 
   const total = useMemo(() => {
@@ -34,12 +43,13 @@ export const ProductModal: FC = () => {
       .filter(Boolean)
       .reduce((sum, i) => sum + (i!.price || 0), 0);
     return base + extra;
-  }, [product, selected, allIngs]);
+  }, [product, selected]);
 
   useEffect(() => {
     if (product && statusModal) {
       setIsOpen(true);
       setProductIngredients(product.ingredients);
+      setProductInformation(product.information);
     } else {
       setIsOpen(false);
       setSelected([]);
@@ -59,7 +69,7 @@ export const ProductModal: FC = () => {
   const onOrder = () => {
     if (!product) return;
     const ingredients: CartIngredient[] = selected
-      .map((id) => allIngs.find((i) => i._id === id))
+      .map((id) => productIngredients?.find((i) => i._id === id))
       .filter(Boolean)
       .map((el) => ({ _id: el!._id, name: el!.name, price: el!.price }));
 
@@ -73,6 +83,7 @@ export const ProductModal: FC = () => {
     });
 
     startClose();
+    toast.success("Товар добавлен в корзину");
   };
 
   if (!product) {
@@ -85,11 +96,10 @@ export const ProductModal: FC = () => {
       onRequestClose={startClose}
       className={"modal__content"}
       overlayClassName={"modal__overlay"}
-      closeTimeoutMS={1000}
+      // closeTimeoutMS={1000}
       preventScroll={true}
     >
-      <div className="product-modal__header">
-        <h2 className="product-modal__title">{product.name}</h2>
+      <div className="product-modal">
         <button
           type="button"
           className="modal__close"
@@ -98,32 +108,43 @@ export const ProductModal: FC = () => {
         >
           ×
         </button>
-      </div>
-
-      <div className="product-modal__body">
         <div className="product-modal__image">
           <img src={product.image} alt={product.name} />
         </div>
-
-        <div className="product-modal__wrap">
-          <IngredientsPicker
-            items={productIngredients}
-            selectedIds={selected}
-            onChange={setSelected}
-          />
+        <div className="product-modal__container">
+          <div className="product-modal__content">
+            <h2 className="product-modal__title">{product.name}</h2>
+            <ul className="product-modal__information">
+              <li>
+                Энерг. ценность <span>{productInfromation?.energy} ккал</span>
+              </li>
+              <li>
+                Белки <span>{productInfromation?.proteins} гр.</span>
+              </li>
+              <li>
+                Жиры <span>{productInfromation?.fats} гр.</span>
+              </li>
+              <li>
+                Углеводы <span>{productInfromation?.carbohydrates} гр.</span>
+              </li>
+              <li>
+                Вес <span>{productInfromation?.weight} гр.</span>
+              </li>
+            </ul>
+            <div className="product-modal__wrap">
+              <IngredientsPicker
+                items={productIngredients}
+                selectedIds={selected}
+                onChange={setSelected}
+              />
+            </div>
+          </div>
+          <div className="product-modal__order">
+            <Button type="button" variant="order" onClick={onOrder}>
+              Заказать · {formatPrice(total)}
+            </Button>
+          </div>
         </div>
-      </div>
-
-      <div className="product-modal__footer">
-        <div className="product-modal__base">
-          Базовая цена:{" "}
-          <span className="product-modal__base-value">
-            {formatPrice(product.price || 0)}
-          </span>
-        </div>
-        <Button type="button" variant="classic" onClick={onOrder}>
-          Заказать · {formatPrice(total)}
-        </Button>
       </div>
     </ReactModal>
   );

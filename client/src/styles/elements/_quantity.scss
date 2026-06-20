@@ -1,4 +1,32 @@
 .quantity {
+  font-size: 20px;
   display: flex;
   align-items: center;
+
+  &__button {
+    padding: 0;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition-duration: 0.5s;
+
+    &--minus {
+      margin-top: -2px;
+
+      &:hover {
+        color: $color-main;
+      }
+    }
+
+    &--plus:hover {
+      color: $color-salad;
+    }
+  }
+
+  &__value {
+    padding: 0 20px;
+  }
 }

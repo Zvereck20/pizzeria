@@ -1,4 +1,8 @@
 .logo {
-  width: 150px;
-  height: 150px;
+  width: 205px;
+  height: 60px;
+
+  img {
+    object-fit: contain;
+  }
 }

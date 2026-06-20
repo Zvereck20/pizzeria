@@ -12,9 +12,12 @@ const ingredientsApi = api.injectEndpoints({
   endpoints: (build) => ({
     getIngredients: build.query<Ingredient[], void>({
       query: () => "/ingredients",
+      keepUnusedDataFor: 86400,
+      providesTags: ["Ingredients"],
     }),
     getIngredientById: build.query<Ingredient, string>({
       query: (id) => `/ingredients/${id}`,
+      providesTags: ["Ingredients"],
     }),
   }),
   overrideExisting: false,

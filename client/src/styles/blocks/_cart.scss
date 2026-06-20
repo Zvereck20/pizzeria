@@ -1,22 +1,104 @@
 .cart {
+  margin: 0 auto;
+  padding-top: 50px;
+  width: 85%;
+
+  &__heading {
+    font-size: 24px;
+    font-weight: 600;
+  }
+
   &__list {
+    padding-top: 25px;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
   }
 
   &__item {
+    padding-left: 27px;
+    padding-right: 24px;
+    height: 105px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    position: relative;
+    background-color: #ffffff;
+    border-radius: 16px;
   }
 
   &__img {
+    width: 85px;
+    height: 85px;
+  }
+
+  &__wrap {
+    padding-left: 20px;
+  }
+
+  &__title {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 22px;
+  }
+
+  &__ingredients {
+    padding-top: 5px;
+    width: 80%;
+    font-size: 12px;
+    color: $color-grey;
+
+    &--empty {
+      color: $color-main;
+      opacity: 0.5;
+    }
+  }
+
+  &__price {
+    margin-left: auto;
+    padding: 0 25px;
+    font-size: 16px;
+  }
+
+  &__quantity {
+    padding: 10px 20px;
+    width: 120px;
+    background-color: $color-while;
+    color: $color-white;
+    border-radius: 50px;
+
+    button {
+      color: $color-white;
+    }
+  }
+
+  &__total {
+    margin-right: 45px;
+    width: 75px;
+    font-size: 16px;
+    text-align: end;
   }
 
   &__remove {
+    padding: 0;
+    background-color: $color-white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+
     svg {
       stroke: $color-while;
+    }
+  }
+
+  &__summary {
+    padding-top: 25px;
+    padding-right: 15px;
+    font-size: 28px;
+    text-align: right;
+    color: $color-sum;
+
+    &-nums {
+      text-decoration: underline;
     }
   }
 }

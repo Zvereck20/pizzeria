@@ -1,22 +1,19 @@
-import type { FC } from "react";
-import { useMemo } from "react";
+import { useMemo, type FC } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { InputMask } from "@react-input/mask";
 import Select from "react-select";
-import { checkoutSchema, type CheckoutFormValues } from "../checkout/validation";
-import { useCart, QuantityControl } from "@/features";
-import { generate30MinSlots, TimeSlot } from "../checkout/timeSlots";
-
-import { Input, Button, Textarea, InputRadio } from "@/components";
-
-import { formatPrice } from "@/lib/format";
-
-import { useSelector } from "react-redux";
-import type { RootState } from "@/app/store";
-import { CheckoutAddressField } from "../checkout/address/СheckoutAddressField";
+import {
+  type CheckoutFormValues,
+  useCart,
+  QuantityControl,
+  checkoutSchema,
+  generate30MinSlots,
+  TimeSlot,
+} from "@/features";
+import { CheckoutAddressField } from "./address/components/СheckoutAddressField";
+import { Input, Textarea, InputRadio } from "@/components";
 import { useGetStoresQuery } from "../stores/storeApi";
-// const selectStores = (s: RootState) => s.store.items; // пример
 
 export const CheckoutForm: FC<{
   onSubmitOrder: (payload: CheckoutFormValues) => void;
@@ -24,7 +21,8 @@ export const CheckoutForm: FC<{
   const { total } = useCart();
   const { data: stores, isSuccess, isError } = useGetStoresQuery();
 
-  const timeOptions = useMemo(() => generate30MinSlots(10, 21), []);
+  const timeOptions = useMemo(() => generate30MinSlots(10, 23), []);
+
   const {
     register,
     handleSubmit,
@@ -39,7 +37,14 @@ export const CheckoutForm: FC<{
       orderType: "delivery",
       fullName: "",
       phone: "",
-      address: { street: "", building: "", appartment: "", entrance: "", floor: "" },
+      address: {
+        city: "",
+        street: "",
+        building: "",
+        appartment: "",
+        entrance: "",
+        floor: "",
+      },
       storeId: null,
       timeMode: "asap",
       scheduledTime: null,
@@ -62,61 +67,59 @@ export const CheckoutForm: FC<{
   const onDecPersons = () =>
     setValue("persons", Math.max(1, (persons ?? 1) - 1), { shouldValidate: true });
 
-  const onSubmit: SubmitHandler<CheckoutFormValues> = (data) => {
+  const onSubmit: SubmitHandler<CheckoutFormValues> = (data, e) => {
+    e?.preventDefault();
     // if (data.paymentMethod === "online") {
     //   //переход на модуль оплаты банка
     // }
+
     onSubmitOrder(data);
   };
 
-  console.log(errors);
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="checkout">
-      <div className="checkout__wrap">
-        <h3 className="checkout__title">Тип заказа</h3>
-        <Controller
-          name="orderType"
-          control={control}
-          render={({ field }) => (
-            <div>
-              <InputRadio
-                id="delivery"
-                label="Доставка"
-                value="delivery"
-                checked={field.value === "delivery"}
-                onChange={() => field.onChange("delivery")}
-              />
-              <InputRadio
-                id="pickup"
-                label="Самовывоз"
-                value="pickup"
-                checked={field.value === "pickup"}
-                onChange={() => field.onChange("pickup")}
-              />
-            </div>
-          )}
-        />
-      </div>
+      <h3 className="checkout__title">Оформление заказа</h3>
+      <Controller
+        name="orderType"
+        control={control}
+        render={({ field }) => (
+          <div className="checkout__wrap">
+            <InputRadio
+              id="delivery"
+              label="Доставка"
+              value="delivery"
+              checked={field.value === "delivery"}
+              onChange={() => field.onChange("delivery")}
+            />
+            <InputRadio
+              id="pickup"
+              label="Самовывоз"
+              value="pickup"
+              checked={field.value === "pickup"}
+              onChange={() => field.onChange("pickup")}
+            />
+          </div>
+        )}
+      />
       {orderType === "pickup" && (
-        <div className="checkout__wrap">
+        <div className="checkout__stores">
           <h3 className="checkout__title">Выберите заведение</h3>
           <Controller
             name="storeId"
             control={control}
             render={({ field }) => (
-              <div className="checkout__stores ">
+              <div className="checkout__wrap">
                 {stores
                   ?.filter((el) => el.isActive === true)
                   .reverse()
                   .map(({ _id, name, address }) => (
                     <InputRadio
-                      key={_id}
-                      id={_id}
+                      key={name}
+                      id={name}
                       label={address}
-                      value={name}
-                      checked={field.value === name}
-                      onChange={() => field.onChange(name)}
+                      value={_id}
+                      checked={field.value === _id}
+                      onChange={() => field.onChange(_id)}
                     />
                   ))}
               </div>
@@ -143,75 +146,76 @@ export const CheckoutForm: FC<{
           />
           {errors.phone && <p className="checkout__error">{errors.phone.message}</p>}
         </li>
-        {orderType === "delivery" && (
-          <li>
-            <CheckoutAddressField control={control} />
-            {errors.address && (
-              <p className="checkout__error">Не верно указан адрес доставки</p>
-            )}
-          </li>
-        )}
-        <li>
-          <h4>Время доставки</h4>
-          <Controller
-            name="timeMode"
-            control={control}
-            render={({ field }) => (
-              <div>
-                <InputRadio
-                  id="asap"
-                  label="Как можно скорее"
-                  value="asap"
-                  checked={field.value === "asap"}
-                  onChange={() => field.onChange("asap")}
-                />
-                <InputRadio
-                  id="scheduled"
-                  label="Другое время"
-                  value="scheduled"
-                  checked={field.value === "scheduled"}
-                  onChange={() => field.onChange("scheduled")}
-                />
-              </div>
-            )}
-          />
-        </li>
-        {timeMode === "scheduled" && (
-          <li>
-            <h4>Выберите время</h4>
-            <Controller
-              name="scheduledTime"
-              control={control}
-              render={({ field }) => {
-                const currentOption =
-                  timeOptions.find((opt) => opt.value === field.value) || null;
-
-                return (
-                  <Select<TimeSlot>
-                    value={currentOption}
-                    onChange={(selected) => field.onChange(selected?.value ?? null)}
-                    options={timeOptions}
-                  />
-                );
-              }}
-            />
-            {errors.scheduledTime && (
-              <p className="mt-1 text-sm text-red-600">{errors.scheduledTime.message}</p>
-            )}
-          </li>
-        )}
-        <li>
-          <h4>Количество персон</h4>
-          <QuantityControl
-            value={persons ?? 1}
-            onInc={onIncPersons}
-            onDec={onDecPersons}
-          />
-          {errors.persons && (
-            <p className="mt-1 text-sm text-red-600">{errors.persons.message}</p>
-          )}
-        </li>
       </ul>
+
+      {orderType === "delivery" && (
+        <div className="checkout__wrap">
+          <CheckoutAddressField control={control} />
+          {errors.address && (
+            <p className="checkout__error">Не верно указан адрес доставки</p>
+          )}
+        </div>
+      )}
+      <div className="checkout__wrap">
+        <h4>Время доставки</h4>
+        <Controller
+          name="timeMode"
+          control={control}
+          render={({ field }) => (
+            <div className="checkout__time">
+              <InputRadio
+                id="asap"
+                label="Как можно скорее"
+                value="asap"
+                checked={field.value === "asap"}
+                onChange={() => field.onChange("asap")}
+              />
+              <InputRadio
+                id="scheduled"
+                label="Другое время"
+                value="scheduled"
+                checked={field.value === "scheduled"}
+                onChange={() => field.onChange("scheduled")}
+              />
+            </div>
+          )}
+        />
+      </div>
+      {timeMode === "scheduled" && (
+        <div className="checkout__wrap">
+          <h4>Выберите время</h4>
+          <Controller
+            name="scheduledTime"
+            control={control}
+            render={({ field }) => {
+              const currentOption =
+                timeOptions.find((opt) => opt.value === field.value) || null;
+
+              return (
+                <Select<TimeSlot>
+                  className="checkout__scheduled"
+                  value={currentOption}
+                  onChange={(selected) => field.onChange(selected?.value ?? null)}
+                  options={timeOptions}
+                />
+              );
+            }}
+          />
+          {errors.scheduledTime && (
+            <p className="checkout__error">{errors.scheduledTime.message}</p>
+          )}
+        </div>
+      )}
+      <div className="checkout__wrap">
+        <h4>Количество персон</h4>
+        <QuantityControl
+          style="checkout__persons"
+          value={persons ?? 1}
+          onInc={onIncPersons}
+          onDec={onDecPersons}
+        />
+        {errors.persons && <p className="checkout__error">{errors.persons.message}</p>}
+      </div>
 
       <div className="checkout__payment">
         <h3 className="checkout__title">Способ оплаты</h3>
@@ -286,21 +290,13 @@ export const CheckoutForm: FC<{
         )}
       </div>
 
-      <div className="checkout__total">
-        <div className="checkout__total-price">
-          Итого к оплате: <span className="tabular-nums">{formatPrice(total)}</span>
-        </div>
-        {/* <Button
-          variant="submit"
-          type="submit"
-          disabled={isSubmitting || !watch("consent")}
-        >
-          Оформить заказ
-        </Button> */}
-        <button type="submit" disabled={isSubmitting || !watch("consent")}>
-          Оформить заказ
-        </button>
-      </div>
+      <button
+        className="checkout__submit"
+        type="submit"
+        disabled={isSubmitting || !watch("consent")}
+      >
+        Оформить заказ
+      </button>
     </form>
   );
 };

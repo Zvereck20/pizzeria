@@ -1,0 +1,10 @@
+.phone {
+  font-size: 18px;
+  font-weight: 700;
+  color: $color-salad;
+  transition: 0.5s;
+
+  &:hover {
+    color: $color-black;
+  }
+}

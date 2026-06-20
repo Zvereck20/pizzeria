@@ -5,6 +5,11 @@
 
 @import "./layout/container";
 
+@import "./pages/stores";
+@import "./pages/order-success";
+@import "./pages/about";
+@import "./pages/vacancies";
+
 @import "./elements/logo";
 @import "./elements/address";
 @import "./elements/button";
@@ -12,13 +17,19 @@
 @import "./elements/product";
 @import "./elements/ingredient";
 @import "./elements/quantity";
+@import "./elements/phone";
+@import "./elements/radio";
 
 @import "./blocks/header";
 @import "./blocks/footer";
 @import "./blocks/menu";
+@import "./blocks/sub-menu";
 @import "./blocks/banners";
 @import "./blocks/products";
 @import "./blocks/ingredients";
 @import "./blocks/modal";
 @import "./blocks/cart";
 @import "./blocks/checkout";
+@import "./blocks/delivery";
+@import "./blocks/vacancy-modal";
+@import "./blocks/loader";

@@ -6,13 +6,8 @@ import { Banner } from "@/features";
 import "swiper/css";
 import "swiper/css/bundle";
 
-export interface SlideItem extends Banner {
-  link?: string;
-  alt?: string;
-}
-
 type SliderProps = {
-  slides: SlideItem[];
+  slides: Banner[] | undefined;
   autoPlay?: boolean;
   autoPlayDelayMs?: number;
 };
@@ -24,9 +19,8 @@ export const Slider: FC<SliderProps> = ({
 }) => {
   return (
     <Swiper
-      modules={[Navigation, Pagination, Autoplay, A11y]}
+      modules={[Pagination, Autoplay, A11y]}
       loop
-      navigation
       pagination={{ clickable: true }}
       spaceBetween={30}
       slidesPerView={5}
@@ -49,31 +43,15 @@ export const Slider: FC<SliderProps> = ({
       speed={500}
       a11y={{ enabled: true }}
     >
-      {slides.map((s) => (
-        <SwiperSlide key={s._id}>
-          {/* Пропорциональная высота и растяжение по ширине */}
-          {/* <div className={`relative w-full overflow-hidden rounded-xl bg-neutral-100`}> */}
-          {/* <div> */}
+      {slides?.map((s) => (
+        <SwiperSlide key={s._id} className="banners__slide">
           {s.link ? (
-            <a href={s.link} aria-label={s.alt ?? "Слайд"}>
-              <img
-                src={s.image}
-                alt={s.alt ?? ""}
-                className="h-full w-full object-contain"
-                loading="lazy"
-                decoding="async"
-              />
+            <a href={s.link}>
+              <img src={s.image} loading="lazy" decoding="async" />
             </a>
           ) : (
-            <img
-              src={s.image}
-              alt={s.alt ?? ""}
-              className="h-full w-full object-contain"
-              loading="lazy"
-              decoding="async"
-            />
+            <img src={s.image} loading="lazy" decoding="async" />
           )}
-          {/* </div> */}
         </SwiperSlide>
       ))}
     </Swiper>

@@ -1,0 +1,31 @@
+.radio {
+  padding-right: 30px;
+  position: relative;
+
+  &-input {
+    width: 0;
+    height: 0;
+    position: absolute;
+    z-index: -999;
+    opacity: 0;
+  }
+
+  &-label {
+    padding: 16px 32px;
+    width: fit-content;
+    font-size: 16px;
+    font-weight: 400;
+    display: block;
+    text-align: center;
+    border-radius: 50px;
+    background-color: $color-white;
+    transition-duration: 0.5s;
+    cursor: pointer;
+  }
+
+  &-input:checked + label {
+    background-color: $color-salad;
+    color: $color-white;
+    cursor: default;
+  }
+}

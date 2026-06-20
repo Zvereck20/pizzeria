@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+import mongooseSequence from "mongoose-sequence";
+
+const AutoIncrement = mongooseSequence(mongoose);
 
 const OrderItemSchema = new mongoose.Schema(
   {
@@ -7,6 +10,7 @@ const OrderItemSchema = new mongoose.Schema(
       ref: "Product",
       required: true,
     },
+    ingredients: [{ type: mongoose.Schema.Types.ObjectId, ref: "Ingredient" }],
     name: {
       type: String,
       required: true,
@@ -20,7 +24,7 @@ const OrderItemSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const OrderSchema = new mongoose.Schema(
@@ -38,6 +42,25 @@ const OrderSchema = new mongoose.Schema(
       enum: ["pending", "confirmed", "delivering", "done", "canceled"],
       default: "pending",
     },
+    orderDetails: {
+      orderType: {
+        type: String,
+        enum: ["delivery", "pickup"],
+        required: true,
+      },
+      scheduledTime: String,
+      persons: {
+        type: Number,
+        required: true,
+      },
+      paymentMethod: {
+        type: String,
+        enum: ["cash", "online", "card"],
+        required: true,
+      },
+      comment: String,
+    },
+
     customer: {
       fullName: {
         type: String,
@@ -48,21 +71,20 @@ const OrderSchema = new mongoose.Schema(
         required: true,
       },
     },
-    orderType: {
-      type: String,
-      enum: ["delivery", "pickup"],
-      required: true,
-    },
     address: {
       street: String,
       building: String,
       appartment: String,
       entrance: String,
       floor: String,
+      comment: String,
     },
-    storeId: { type: mongoose.Schema.Types.ObjectId, ref: "Store", required: true },
+    store: { type: mongoose.Schema.Types.ObjectId, ref: "Store", required: true },
+    number: Number,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
+
+OrderSchema.plugin(AutoIncrement, { inc_field: "number" });
 
 export default mongoose.model("Order", OrderSchema);

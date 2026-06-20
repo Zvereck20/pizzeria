@@ -1,35 +1,38 @@
 import type { FC } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Header, Footer } from "@/components";
+import ReactModal from "react-modal";
+import { Toaster } from "react-hot-toast";
+import { Header, Footer, GlobalLoader } from "@/components";
+import {
+  Home,
+  CheckoutPage,
+  OrderSuccessPage,
+  StoresPage,
+  AboutPage,
+  VacanciesPage,
+  NotFound,
+} from "@/pages";
+import { CartProvider } from "@/features";
 
-// import { useGetStoresQuery } from "./features/stores/storeApi";
-
-import { DataBootstrap } from "./app/DataBootstrap";
-import { Home, CheckoutPage } from "@/pages";
-import { CartProvider, useGetProductsQuery } from "@/features";
+ReactModal.setAppElement("#root");
 
 export const App: FC = () => {
-  // const { data, isLoading, error } = useGetProductsQuery();
-
-  // const { data: dataOrder } = useGetStoresQuery();
-
-  // if (isLoading) console.log("Is loading Now");
-  // if (error) console.log(error);
-
-  // dataOrder?.forEach((el) => {
-  //   console.log(el);
-  // });
-
   return (
     <BrowserRouter>
       <CartProvider>
         <div className="container">
-          <DataBootstrap />
+          <GlobalLoader />
           <Header />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/cart" element={<CheckoutPage />} />
+            <Route path="/success-page" element={<OrderSuccessPage />} />
+            <Route path="/stores" element={<StoresPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/vacancies" element={<VacanciesPage />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
+          <Toaster position="top-center" />
           <Footer />
         </div>
       </CartProvider>

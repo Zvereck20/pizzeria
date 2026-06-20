@@ -1,10 +1,9 @@
 import type { FC } from "react";
-// import { X } from "lucide-react";
 import { formatPrice } from "@/lib/format";
 import { useCart } from "@/features";
 import type { CartItem } from "@/features/cart/types";
-import { Button, Separator } from "@/components/";
 import { QuantityControl } from "./QuantityControl";
+import toast from "react-hot-toast";
 
 export const CartItemCard: FC<{ item: CartItem }> = ({ item }) => {
   const { remove, incQuantity } = useCart();
@@ -20,19 +19,19 @@ export const CartItemCard: FC<{ item: CartItem }> = ({ item }) => {
       <div className="cart__wrap">
         <h3 className="cart__title">{item.name}</h3>
         {item.ingredients?.length ? (
-          <ul className="cart__ingredients">
-            <li className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-              {item.ingredients.map((g) => g.name).join(", ")}
-            </li>
-          </ul>
+          <p className="cart__ingredients">
+            <span>Добавить: </span>
+            {item.ingredients.map((g) => g.name).join(", ")}
+          </p>
         ) : (
-          <p className="cart__ingredients--empty">Без добавок</p>
+          <p className="cart__ingredients cart__ingredients--empty">Без добавок</p>
         )}
       </div>
 
       <div className="cart__price">{formatPrice(item.itemPrice)}</div>
 
       <QuantityControl
+        style="cart__quantity"
         value={item.quantity}
         onInc={() => incQuantity(item.uid, true)}
         onDec={() => incQuantity(item.uid, false)}
@@ -40,11 +39,13 @@ export const CartItemCard: FC<{ item: CartItem }> = ({ item }) => {
 
       <div className="cart__total">{formatPrice(lineTotal)}</div>
 
-      <Button
+      <button
         className="cart__remove"
         type="button"
-        variant="classic"
-        onClick={() => remove(item.uid)}
+        onClick={() => {
+          remove(item.uid);
+          toast.success("Товар удален");
+        }}
         aria-label="Удалить позицию"
       >
         <svg
@@ -71,7 +72,7 @@ export const CartItemCard: FC<{ item: CartItem }> = ({ item }) => {
             />
           </g>
         </svg>
-      </Button>
+      </button>
     </li>
   );
 };

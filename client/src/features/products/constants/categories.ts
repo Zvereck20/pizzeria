@@ -1,15 +1,22 @@
-export type Category = "pizza" | "combo" | "salad" | "soup" | "paste" | "appetizers" | "rolls" | "dessert" | "drink";
+export type Category =
+  | "pizza"
+  | "combo"
+  | "salad"
+  | "soup"
+  | "paste"
+  | "appetizers"
+  | "rolls"
+  | "dessert"
+  | "drink";
 
-export const categoryLabels: Record<Category, string> = {
-  pizza: "🍕 Пиццы",
-  combo: "🥡 Комбо",
-  salad: "🥗 Салаты",
-  soup: "🍲 Супы",
-  paste: "🍝 Паста",
-  appetizers: "🥟 Закуски",
-  rolls: "🍣 Роллы",
-  dessert: "🍰 Десерты",
-  drink: "🥤 Напитки",
-};
-
-export const categoryOrder: Category[] = ["pizza", "combo", "salad", "soup", "paste", "appetizers", "rolls", "dessert", "drink"];
+export const categoryLabels: { id: Category; label: string }[] = [
+  { id: "pizza", label: "Пиццы" },
+  { id: "combo", label: "Комбо" },
+  { id: "salad", label: "Салаты" },
+  { id: "soup", label: "Супы" },
+  { id: "paste", label: "Паста" },
+  { id: "appetizers", label: "Закуски" },
+  { id: "rolls", label: "Роллы" },
+  { id: "dessert", label: "Десерты" },
+  { id: "drink", label: "Напитки" },
+];

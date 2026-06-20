@@ -1,0 +1,78 @@
+.vacancies {
+  padding-top: 50px;
+
+  &__list {
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  &__item {
+    padding: 24px;
+    background-color: $color-white;
+    border-radius: 16px;
+    transition-duration: 0.5s;
+  }
+
+  &__wrap {
+    max-height: 500px;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &__title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 22px;
+    position: relative;
+    cursor: pointer;
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background-image: url("/images/arrow.svg");
+      background-repeat: no-repeat;
+      transition-duration: 0.5s;
+      top: 0;
+      right: 0;
+    }
+  }
+
+  &__description {
+    margin: 10px 0;
+
+    p {
+      padding-bottom: 5px;
+    }
+
+    ul {
+      padding: 10px;
+    }
+
+    li {
+      list-style-type: disc;
+      padding-bottom: 2px;
+    }
+  }
+
+  .is-close {
+    .vacancies__title::after {
+      transform: rotate(180deg);
+      filter: grayscale(100%);
+    }
+
+    .vacancies__wrap {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(-6px);
+      transition:
+        max-height 0.5s ease,
+        opacity 0.25s ease,
+        transform 0.35s ease;
+    }
+  }
+}

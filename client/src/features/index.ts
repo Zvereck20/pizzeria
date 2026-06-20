@@ -3,3 +3,7 @@ export * from "./cart";
 export * from "./checkout/СheckoutForm";
 export * from "./ingredients";
 export * from "./products";
+export * from "./checkout";
+export * from "./orders";
+export * from "./stores";
+export * from "./vacancies";

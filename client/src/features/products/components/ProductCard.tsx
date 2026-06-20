@@ -1,12 +1,10 @@
-import { useState, type FC } from "react";
+import type { FC } from "react";
 import { useDispatch } from "react-redux";
 import { openProductModal } from "../state/productsUISlice";
 import { useCart, Product } from "@/features";
 import { formatPrice } from "@/lib/format";
 import { Button } from "@/components";
-import ReactModal from "react-modal";
-
-ReactModal.setAppElement("#root");
+import toast from "react-hot-toast";
 
 export const ProductCard: FC<{
   product: Pick<Product, "_id" | "name" | "image" | "description" | "price">;
@@ -27,6 +25,8 @@ export const ProductCard: FC<{
       ingredients: [],
       quantity: 1,
     });
+
+    toast.success("Товар добавлен в корзину");
   };
 
   return (
@@ -62,20 +62,20 @@ export const ProductCard: FC<{
 
         <p className="product__description">{product.description}</p>
         <div className="product__price">{formatPrice(product.price)}</div>
-        <div className="products__wrap">
+        <div className="product__wrap">
           <Button
-            variant="classic"
+            variant="ingredients"
             onClick={() => onOpenModal(product._id)}
-            aria-label="Открыть модалку ингредиентов"
+            aria-label="Открыть выбор ингредиентов"
           >
-            Ингредиенты
+            + Ингредиенты
           </Button>
           <Button
-            variant="classic"
+            variant="add-card"
             onClick={onAddItem}
             aria-label="Добавить товар в корзину"
           >
-            Добавить в корзину
+            В корзину
           </Button>
         </div>
       </div>

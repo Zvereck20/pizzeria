@@ -22,14 +22,3 @@ export type Cart = {
   currency: "RUB";
   totalPrice: number;
 };
-
-// export type OrderDraft = {
-//   items: Array<{
-//     productId: ID;
-//     name: string;
-//     quantity: number;
-//     unitPrice: number; // basePrice + sum(ingredients)
-//     ingredientIds?: ID[]; // для бэка (если нужно)
-//   }>;
-//   totalPrice: number;
-// };

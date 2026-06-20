@@ -1,3 +1,174 @@
 .checkout {
-  outline: 1px solid red;
+  margin: 0 auto;
+  padding-top: 50px;
+  width: 85%;
+
+  &__title {
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  &__wrap {
+    margin-top: 25px;
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    h4 {
+      width: 175px;
+      font-size: 18px;
+      font-weight: 300;
+    }
+  }
+
+  &__stores {
+    padding-top: 25px;
+  }
+
+  &__container {
+    padding-top: 23px;
+
+    li {
+      padding-bottom: 16px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    label {
+      width: 175px;
+      font-size: 18px;
+    }
+
+    input {
+      width: 50%;
+      height: 54px;
+      padding-left: 16px;
+      border-radius: 50px;
+      background-color: #ffffff;
+      border: none;
+      outline: none;
+    }
+  }
+
+  &__time {
+    display: flex;
+    align-items: center;
+  }
+
+  &__scheduled {
+    width: 50%;
+
+    .css-13cymwt-control,
+    .css-t3ipsp-control {
+      height: 54px;
+      padding-left: 16px;
+      border-radius: 50px;
+      background-color: #ffffff;
+      border: none;
+      outline: none;
+      cursor: pointer;
+    }
+  }
+
+  &__persons {
+    margin-left: 20px;
+    width: 150px;
+    height: 54px;
+    display: flex;
+    justify-content: center;
+    background-color: $color-white;
+    text-align: center;
+    border-radius: 50px;
+  }
+
+  &__payment {
+    padding-top: 50px;
+  }
+
+  &__change {
+    padding-top: 25px;
+
+    label {
+      display: inline-block;
+      width: 175px;
+      font-size: 18px;
+    }
+
+    input {
+      width: 20%;
+      height: 54px;
+      padding-left: 16px;
+      border-radius: 50px;
+      background-color: #ffffff;
+      border: none;
+      outline: none;
+    }
+  }
+
+  &__comment {
+    padding-top: 50px;
+
+    label {
+      padding-bottom: 25px;
+      display: block;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    textarea {
+      width: 50%;
+      height: 100px;
+      padding-top: 15px;
+      padding-left: 16px;
+      border-radius: 16px;
+      background-color: #ffffff;
+      border: none;
+      outline: none;
+      resize: none;
+    }
+  }
+
+  &__agree {
+    padding-top: 25px;
+
+    label {
+      padding-left: 15px;
+      display: inline-block;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  }
+
+  &__submit {
+    margin-top: 25px;
+    padding: 16px 32px;
+    width: 210px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 22px;
+    background-color: $color-main;
+    border-radius: 50px;
+    border: none;
+    color: #fff;
+    transition: 0.5s;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $color-salad;
+      color: $color-black;
+    }
+
+    &:disabled {
+      background-color: $color-grey;
+      cursor: default;
+    }
+  }
+
+  &__error {
+    position: absolute;
+    top: 25%;
+    right: 40%;
+    color: $color-main;
+  }
 }

@@ -1,0 +1,98 @@
+.stores {
+  padding-top: 50px;
+
+  &__container {
+    padding-top: 20px;
+    display: flex;
+    align-items: stretch;
+  }
+
+  &__wrap {
+    margin-left: auto;
+    margin-right: 20px;
+    flex-basis: 30%;
+    // flex-shrink: 0;
+    padding: 24px 32px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0px 9px 30px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  &__content {
+    padding-bottom: 25px;
+    border-bottom: 1px solid $color-while;
+  }
+
+  &__title {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 20px;
+    color: $color-salad;
+  }
+
+  &__info {
+    padding-left: 20px;
+    padding-top: 20px;
+
+    li {
+      padding-top: 8px;
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 24px;
+      color: $color-grey;
+    }
+
+    span {
+      display: block;
+      padding-bottom: 3px;
+      font-weight: 500;
+      line-height: 24px;
+    }
+  }
+
+  &__phone {
+    color: $color-grey;
+    text-decoration: 0.5s;
+
+    &:hover {
+      color: $color-salad;
+    }
+  }
+
+  &__menu {
+    padding-bottom: 2px;
+    font-weight: 400;
+    line-height: 16px;
+    color: $color-salad;
+    border-bottom: 1px dotted $color-salad;
+  }
+
+  &__list {
+    padding-top: 25px;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__item {
+    font-size: 16px;
+    line-height: 20px;
+    color: $color-grey;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    transition-duration: 0.5s;
+
+    &:hover {
+      color: $color-salad;
+    }
+  }
+
+  &__map {
+    border-radius: 16px;
+    box-shadow: 0px 9px 30px 0px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    flex-grow: 1;
+  }
+}

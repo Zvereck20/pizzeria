@@ -2,20 +2,20 @@ import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { api } from "./api";
 
+import { rtkQueryLoaderMiddleware } from "./rtkQueryLoaderMiddleware";
 import productsUIReducer from "../features/products/state/productsUISlice";
-import productsDataReducer from "../features/products/state/productsDataSlice";
-import ingredientsReducer from "../features/ingredients/ingredientsSlice";
-// import bannersReducer from "../features/banners/bannersSlice";
+import orderReducer from "../features/orders/ordersSlice";
+import { asyncReducer } from "./asyncSlice";
 
 export const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
     productsUI: productsUIReducer,
-    productsData: productsDataReducer,
-    ingredients: ingredientsReducer,
-    // banners: bannersReducer,
+    order: orderReducer,
+    async: asyncReducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(api.middleware).concat(rtkQueryLoaderMiddleware),
 });
 
 setupListeners(store.dispatch);

@@ -7,11 +7,13 @@ export type PaymentMethod = "cash" | "online" | "card";
 export const phoneRegex = /^(\+?\d{1,3}[-.\s]?)?(\(?\d{2,4}\)?[-.\s]?)?[\d-.\s]{5,}$/;
 
 const addressShape = yup.object({
+  city: yup.string().trim().required("Город обязателен"),
   street: yup.string().trim().required("Улица обязательна"),
   building: yup.string().trim().required("Дом обязателен"),
   appartment: yup.string().nullable().trim().optional(),
   entrance: yup.string().nullable().trim().optional(),
   floor: yup.string().nullable().trim().optional(),
+  comment: yup.string().nullable().trim().optional(),
 });
 
 export const checkoutSchema = yup.object({
@@ -28,17 +30,12 @@ export const checkoutSchema = yup.object({
     .matches(phoneRegex, "Некорректный номер телефона")
     .required("Телефон обязателен"),
 
-  // ВАЖНО: поле ВСЕГДА присутствует: либо объект, либо null
-  address: addressShape
-    .nullable()
-    .default(null)
-    .when("orderType", {
-      is: "delivery",
-      then: (s) => s.required(),
-      otherwise: (s) => s.nullable().default(null),
-    }),
+  address: addressShape.when("orderType", {
+    is: "delivery",
+    then: (s) => s.required(),
+    otherwise: (s) => s.strip(),
+  }),
 
-  // ВСЕГДА присутствует: string | null
   storeId: yup
     .string()
     .nullable()
@@ -51,7 +48,6 @@ export const checkoutSchema = yup.object({
 
   timeMode: yup.mixed<TimeMode>().oneOf(["asap", "scheduled"]).required(),
 
-  // ВСЕГДА присутствует: string | null
   scheduledTime: yup
     .string()
     .nullable()
@@ -70,10 +66,8 @@ export const checkoutSchema = yup.object({
     .max(20, "Не больше 20")
     .required(),
 
-  // === Оплата ===
   paymentMethod: yup.mixed<PaymentMethod>().oneOf(["cash", "online", "card"]).required(),
 
-  // ВСЕГДА присутствует: number | null
   cashGiven: yup
     .number()
     .transform((v, orig) => (orig === "" || orig == null ? null : v))

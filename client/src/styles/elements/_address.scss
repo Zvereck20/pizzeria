@@ -1,4 +1,38 @@
 .address {
   display: flex;
   align-items: center;
+  font-size: 14px;
+
+  svg {
+    margin-right: 14px;
+  }
+}
+.address-field {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+
+  h4 {
+    width: 175px;
+    font-size: 18px;
+    font-weight: 300;
+  }
+
+  button {
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    flex-grow: 1;
+    text-align: left;
+  }
+
+  input {
+    width: 56%;
+    height: 54px;
+    padding-left: 16px;
+    border-radius: 50px;
+    background-color: #ffffff;
+    border: none;
+    outline: none;
+  }
 }

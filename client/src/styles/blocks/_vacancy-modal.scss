@@ -1,0 +1,28 @@
+.vacancy-modal {
+  padding-top: 20px;
+
+  h2 {
+    padding-bottom: 15px;
+    font-size: 18px;
+  }
+
+  div {
+    padding-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+  }
+
+  button:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+
+  &__error {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: $color-main;
+  }
+}

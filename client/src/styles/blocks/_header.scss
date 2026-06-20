@@ -1,40 +1,55 @@
 .header {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(8px);
-  transition: padding 300ms, box-shadow 300ms;
+  padding-top: 40px;
+  padding-bottom: 20px;
+  border-radius: 0 0 16px 16px;
+  // transition: top 300ms box-shadow 300ms;
+  transition: top 300ms;
   box-shadow: none;
 
-  // position: sticky;
-  // top: 0;
-  // z-index: 40;
-  // width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  width: 100%;
 
   &--shadow {
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    top: -30px;
+    background-color: rgba($color: $color-back, $alpha: 0.9);
+    box-shadow: 0 2px 9px 3px rgb(0 0 0 / 0.3);
   }
 
   &__container {
     margin: 0 auto;
-    padding: 0.5rem 1rem;
-    max-width: 1600px;
+    max-width: 85%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
 
     transition: padding 300ms;
-
-    @media (min-width: $lg) {
-      padding: 0.5rem 2rem;
-    }
   }
 
   &__info {
+    padding-left: 30px;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    opacity: 0.95;
+    flex-grow: 1;
+  }
 
-    transition: gap 300ms, opacity 300ms;
+  &__time {
+    padding-left: 15px;
+    display: flex;
+    align-items: center;
+    color: $color-grey;
+
+    svg {
+      margin-right: 11px;
+    }
+  }
+
+  &__stores {
+    margin-left: 30px;
+  }
+
+  .phone {
+    margin-left: auto;
+    margin-right: 20px;
   }
 }

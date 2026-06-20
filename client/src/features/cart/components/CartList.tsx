@@ -14,7 +14,7 @@ export const CartList: FC<CartListProps> = ({ items, total }) => {
   }
 
   return (
-    <div>
+    <div className="cart">
       <h2 className="cart__heading">Состав заказа:</h2>
       <ul className="cart__list">
         {items.map((it) => (
@@ -23,9 +23,7 @@ export const CartList: FC<CartListProps> = ({ items, total }) => {
       </ul>
 
       <div className="cart__summary">
-        <p>
-          Итого: <span className="cart__summary-nums">{formatPrice(total)}</span>
-        </p>
+        Итого: <span className="cart__summary-nums">{formatPrice(total)}</span>
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ export const IngredientsPicker: FC<IngredientsPickerProps> = ({
 
   return (
     <div className="ingredients">
-      <h3 className="ingredients__title">Ингредиенты</h3>
+      <h3 className="ingredients__title">Добавить ингредиенты</h3>
 
       <div className="ingredients__wrap">
         {items.map((ing) => (
