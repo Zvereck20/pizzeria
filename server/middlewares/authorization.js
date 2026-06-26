@@ -1,6 +1,6 @@
 export const authorization = (req, res, next) => {
   try {
-    if (!req.session) {
+    if (!req.session?.admin) {
       return res.status(401).json({ message: "Unauthorized" });
     }
 

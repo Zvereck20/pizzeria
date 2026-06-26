@@ -14,6 +14,7 @@ import { authorization } from "./middlewares/authorization.js";
 
 const app = express();
 const PORT = 5000;
+const MONGO_URI = process.env.MONGO_URI || "mongodb://mongo:27017/pizza-db";
 
 app.use(
   cors({
@@ -21,6 +22,7 @@ app.use(
     credentials: true, // если нужны куки или авторизация
   }),
 );
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "supersecret",
@@ -33,11 +35,12 @@ app.use(
       secure: process.env.NODE_ENV === "production",
     },
     store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URI,
+      mongoUrl: MONGO_URI,
       ttl: 60 * 60 * 6, // 6 часов
     }),
   }),
 );
+
 app.use(cookieParser());
 app.use(express.json());
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads"))); // Путь к папке с загруженными изображениями
@@ -59,9 +62,6 @@ app.use("/api/admin/orders", authorization, adminsRoutes.orderAdminRoutes);
 app.use("/api/admin/stores", authorization, adminsRoutes.storeAdminRoutes);
 app.use("/api/admin/banners", authorization, adminsRoutes.bannerAdminRoutes);
 app.use("/api/admin/vacancies", authorization, adminsRoutes.vacancyAdminRoutes);
-
-// URI из docker-compose.yml
-const MONGO_URI = "mongodb://mongo:27017/pizza-db";
 
 mongoose
   .connect(MONGO_URI, {

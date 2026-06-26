@@ -10,6 +10,9 @@ Backend
 
 - order schema PATCH поменять схему только для status
 
+- Главная идея: сначала закрываем High issues минимальным коммитом, не трогаем frontend и не лезем в 
+adminProducts.js, потому что это отдельная задача с multipart/Joi/Multer.
+
 - перевести серверные сообщения на русский
 
 - ENV вместо хардкода - Сейчас MONGO_URI задан в compose. Для гибкости можешь использовать .env:
@@ -20,3 +23,67 @@ Backend
 - logoutn не нужен, ограничиваем сессию по времени / 6 часов
 - manager ограничивается в нутри frontend 
 
+2. Приоритетный roadmap
+Этап 1 — закрыть High issues отдельным коммитом
+
+Цель: безопасно починить авторизацию и Mongo URI, не меняя поведение проекта шире необходимого.
+
+Что делаем:
+
+Исправить server/middlewares/authorization.js.
+Исправить единый MONGO_URI в server/index.js.
+Проверить, что docker-compose.yml реально передаёт admin credentials в server container.
+Проверить через Docker-команды.
+Не трогать adminProducts.js.
+Этап 2 — привести admin config к стабильному виду
+
+После High fixes проверить файл:
+
+server/config/adminConfig.js
+
+или, если у тебя он называется иначе:
+
+server/config/admin.config.js
+
+Важно: сейчас не переименовывать файл без необходимости. Используем существующее имя, чтобы не плодить лишний diff.
+
+Нужно убедиться, что там нет захардкоженных логинов/паролей.
+
+Этап 3 — отдельно заняться adminProducts ingredients parsing
+
+Это Low/Medium issue, но его лучше делать отдельной задачей, потому что там связка:
+
+multipart/form-data;
+Multer;
+req.body.ingredients;
+JSON string;
+массив;
+Joi validation;
+ObjectId[].
+
+Этот этап не смешиваем с auth/session fixes.
+
+Этап 4 — проверить защиту всех admin routes
+
+После авторизации надо пройтись по:
+
+server/routes/admin/
+
+и убедиться, что все CRUD routes защищены.
+
+Лучше не писать authorization на каждый endpoint вручную, а делать так:
+
+router.use(authorization)
+
+внутри каждого admin route файла, кроме auth.routes.js.
+
+Этап 5 — role-based доступ
+
+После базовой защиты можно добавить разграничение:
+
+admin — полный доступ;
+manager — ограниченный доступ.
+
+Например, DELETE разрешать только admin.
+
+Но это лучше делать после того, как базовая session-auth работает стабильно.
