@@ -13,8 +13,6 @@ router.post("/", validateBody(adminLoginSchema), async (req, res) => {
 
     const admin = getAdminsConfig(login, password);
 
-    console.log("admin", admin);
-
     if (!admin) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
