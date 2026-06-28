@@ -20,6 +20,20 @@ export interface Product {
   information: ProductInformation;
 }
 
+export interface ProductMutationResponse extends Omit<Product, "ingredients"> {
+  ingredients: string[];
+  available: boolean;
+}
+
+export interface UpdateProductRequest {
+  id: string;
+  body: FormData;
+}
+
+export interface DeleteProductResponse {
+  message: string;
+}
+
 const productsApi = api.injectEndpoints({
   endpoints: (build) => ({
     getProducts: build.query<Product[], void>({
@@ -31,8 +45,37 @@ const productsApi = api.injectEndpoints({
       query: (id) => `/products/${id}`,
       providesTags: ["Products"],
     }),
+    createProduct: build.mutation<ProductMutationResponse, FormData>({
+      query: (body) => ({
+        url: "/admin/products",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Products"],
+    }),
+    updateProduct: build.mutation<ProductMutationResponse, UpdateProductRequest>({
+      query: ({ id, body }) => ({
+        url: `/admin/products/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Products"],
+    }),
+    deleteProduct: build.mutation<DeleteProductResponse, string>({
+      query: (id) => ({
+        url: `/admin/products/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Products"],
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetProductsQuery, useGetProductByIdQuery } = productsApi;
+export const {
+  useGetProductsQuery,
+  useGetProductByIdQuery,
+  useCreateProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
+} = productsApi;

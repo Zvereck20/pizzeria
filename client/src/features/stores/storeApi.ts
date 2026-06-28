@@ -11,7 +11,29 @@ export interface Store {
     lat: number;
     lan: number;
   };
-  isActive: Boolean;
+  isActive: boolean;
+}
+
+export interface StoreRequest {
+  name: string;
+  address: string;
+  operating_mode: string;
+  phone: string;
+  menu: string;
+  geo: {
+    lat: number;
+    lan: number;
+  };
+  isActive?: boolean;
+}
+
+export interface UpdateStoreRequest {
+  id: string;
+  body: Partial<StoreRequest>;
+}
+
+export interface DeleteStoreResponse {
+  message: string;
 }
 
 const storeApi = api.injectEndpoints({
@@ -25,8 +47,37 @@ const storeApi = api.injectEndpoints({
       query: (id) => `/stores/${id}`,
       providesTags: ["Stores"],
     }),
+    createStore: build.mutation<Store, StoreRequest>({
+      query: (body) => ({
+        url: "/admin/stores",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Stores"],
+    }),
+    updateStore: build.mutation<Store, UpdateStoreRequest>({
+      query: ({ id, body }) => ({
+        url: `/admin/stores/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Stores"],
+    }),
+    deleteStore: build.mutation<DeleteStoreResponse, string>({
+      query: (id) => ({
+        url: `/admin/stores/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Stores"],
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetStoresQuery, useGetStoreByIdQuery } = storeApi;
+export const {
+  useGetStoresQuery,
+  useGetStoreByIdQuery,
+  useCreateStoreMutation,
+  useUpdateStoreMutation,
+  useDeleteStoreMutation,
+} = storeApi;
