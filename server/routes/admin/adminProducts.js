@@ -4,17 +4,39 @@ import { promises as fs } from "fs";
 import Product from "../../models/Product.js";
 // import { parseJsonFields } from "../../middlewares/parseJsonFields.js";
 // import { toObjectIdArray } from "../../middlewares/toObjectIdArray.js";
-import { upload } from "../../middlewares/upload.js";
+import { uploadImage } from "../../middlewares/upload.js";
 import { createProductSchema, updateProductSchema } from "../../validators/product.js";
 
 const router = express.Router();
 
+const normalizeIngredients = (ingredients) => {
+  if (ingredients === undefined) {
+    return undefined;
+  }
+
+  if (Array.isArray(ingredients)) {
+    return ingredients;
+  }
+
+  try {
+    const parsedIngredients = JSON.parse(ingredients);
+
+    if (Array.isArray(parsedIngredients)) {
+      return parsedIngredients;
+    }
+  } catch {
+    return [ingredients];
+  }
+
+  return [ingredients];
+};
+
 // POST api/admin/products
 // router.post("/", upload.single("image"), parseJsonFields(["ingredients"]), toObjectIdArray("ingredients"), async (req, res) => {
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/", uploadImage, async (req, res) => {
   try {
     // переписать допы на выражение перменной типо const ingre = req.body.ingredients ?? чтото : или чтото и потом вск скопом в body
-    const ingredients = [req.body.ingredients];
+    const ingredients = normalizeIngredients(req.body.ingredients);
     const information = JSON.parse(req.body.information);
 
     const image = req.file?.filename;
@@ -35,16 +57,16 @@ router.post("/", upload.single("image"), async (req, res) => {
 
 // PATCH api/admin/products/id
 // router.patch("/:id", upload.single("image"), parseJsonFields(["ingredients"]), toObjectIdArray("ingredients"), async (req, res) => {
-router.patch("/:id", upload.single("image"), async (req, res) => {
+router.patch("/:id", uploadImage, async (req, res) => {
   try {
-    const ingredients = [req.body.ingredients];
+    const ingredients = normalizeIngredients(req.body.ingredients);
     const information = JSON.parse(req.body.information);
     const image = req.file?.filename;
-    // const body = ingredients.length ? { ...req.body, ingredients } : { ...req.body };
     const body = { ...req.body };
 
     if (image) body.image = image;
     if (information) body.information = information;
+    if (ingredients !== undefined) body.ingredients = ingredients;
 
     const { error } = updateProductSchema.validate(body);
 

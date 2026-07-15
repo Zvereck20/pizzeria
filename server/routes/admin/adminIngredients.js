@@ -2,7 +2,7 @@ import express from "express";
 import Ingredient from "../../models/Ingredient.js";
 import path from "path";
 import { promises as fs } from "fs";
-import { upload } from "../../middlewares/upload.js";
+import { uploadImage } from "../../middlewares/upload.js";
 import {
   createIngredientSchema,
   updateIngredientSchema,
@@ -11,7 +11,7 @@ import {
 const router = express.Router();
 
 // POST api/admin/ingredients
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/", uploadImage, async (req, res) => {
   try {
     const image = req.file?.filename;
     const body = { ...req.body, image };
@@ -30,7 +30,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 });
 
 // PATCH api/admin/ingredients/id
-router.patch("/:id", upload.single("image"), async (req, res) => {
+router.patch("/:id", uploadImage, async (req, res) => {
   try {
     const image = req.file?.filename;
     const body = { ...req.body };

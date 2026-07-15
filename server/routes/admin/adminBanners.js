@@ -2,13 +2,13 @@ import express from "express";
 import Banner from "../../models/Banner.js";
 import path from "path";
 import { promises as fs } from "fs";
-import { upload } from "../../middlewares/upload.js";
+import { uploadImage } from "../../middlewares/upload.js";
 import { createBannerSchema, updateBannerSchema } from "../../validators/Banner.js";
 
 const router = express.Router();
 
 // POST api/admin/banners
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/", uploadImage, async (req, res) => {
   try {
     const image = req.file?.filename;
     const body = { ...req.body, image };
@@ -27,7 +27,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 });
 
 // PATCH api/admin/banners/id
-router.patch("/:id", upload.single("image"), async (req, res) => {
+router.patch("/:id", uploadImage, async (req, res) => {
   try {
     const image = req.file?.filename;
     const body = { ...req.body };

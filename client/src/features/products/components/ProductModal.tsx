@@ -29,8 +29,6 @@ export const ProductModal: FC = () => {
   const { data: product } = useGetProductByIdQuery(productId ?? skipToken);
   const { addItem } = useCart();
 
-  console.log(product, "product");
-
   const [isOpen, setIsOpen] = useState(false);
   const [productIngredients, setProductIngredients] = useState<Ingredient[]>([]);
   const [productInfromation, setProductInformation] = useState<ProductInformation>();

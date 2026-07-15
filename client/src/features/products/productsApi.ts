@@ -1,5 +1,6 @@
 import { api } from "@/app/api";
 import type { Ingredient } from "@/features";
+import type { Category } from "./constants/categories";
 
 export interface ProductInformation {
   weight: number;
@@ -15,7 +16,8 @@ export interface Product {
   price: number;
   image: string;
   description: string;
-  category: string;
+  category: Category;
+  available: boolean;
   ingredients: Ingredient[];
   information: ProductInformation;
 }
