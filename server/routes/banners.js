@@ -1,5 +1,6 @@
 import express from "express";
 import Banner from "../models/Banner.js";
+import { mapImages } from "../utils/mapImages.js";
 
 const router = express.Router();
 

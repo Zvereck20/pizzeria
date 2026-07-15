@@ -5,7 +5,7 @@ export function validateBody(schema) {
     if (error) {
       return res.status(400).json({
         messsage: "Validation error",
-        details: error.details.messsage,
+        details: error.details.map(({ message }) => message),
       });
     }
 

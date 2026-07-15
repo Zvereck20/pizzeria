@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import ReactModal from "react-modal";
 import { Toaster } from "react-hot-toast";
 import { Header, Footer, GlobalLoader } from "@/components";
@@ -13,17 +13,36 @@ import {
   NotFound,
 } from "@/pages";
 import { CartProvider } from "@/features";
+import {
+  AdminProductsPage,
+  AdminIngredientDetailsPage,
+  AdminIngredientsPage,
+  AdminLayout,
+  AdminLoginPage,
+  AdminProductDetailsPage,
+  ProtectedAdminRoute,
+} from "@/admin";
 
 ReactModal.setAppElement("#root");
+
+const PublicLayout: FC = () => {
+  return (
+    <div className="container">
+      <GlobalLoader />
+      <Header />
+      <Outlet />
+      <Toaster position="top-center" />
+      <Footer />
+    </div>
+  );
+};
 
 export const App: FC = () => {
   return (
     <BrowserRouter>
       <CartProvider>
-        <div className="container">
-          <GlobalLoader />
-          <Header />
-          <Routes>
+        <Routes>
+          <Route element={<PublicLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/cart" element={<CheckoutPage />} />
             <Route path="/success-page" element={<OrderSuccessPage />} />
@@ -31,10 +50,17 @@ export const App: FC = () => {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/vacancies" element={<VacanciesPage />} />
             <Route path="*" element={<NotFound />} />
-          </Routes>
-          <Toaster position="top-center" />
-          <Footer />
-        </div>
+          </Route>
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route element={<ProtectedAdminRoute />}>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="products" element={<AdminProductsPage />} />
+              <Route path="products/:id" element={<AdminProductDetailsPage />} />
+              <Route path="ingredients" element={<AdminIngredientsPage />} />
+              <Route path="ingredients/:id" element={<AdminIngredientDetailsPage />} />
+            </Route>
+          </Route>
+        </Routes>
       </CartProvider>
     </BrowserRouter>
   );
