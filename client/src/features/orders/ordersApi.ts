@@ -1,5 +1,5 @@
 import { api } from "@/app/api";
-import { Order, OrderRequest } from "./ordersTypes";
+import type { Order, OrderRequest, UpdateOrderStatusRequest } from "./ordersTypes";
 
 const ordersApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -19,9 +19,21 @@ const ordersApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Orders"],
     }),
+    updateOrderStatus: build.mutation<OrderRequest, UpdateOrderStatusRequest>({
+      query: ({ id, status }) => ({
+        url: `/admin/orders/${id}`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["Orders"],
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetOrdersQuery, useGetOrderByIdQuery, useCreateOrderMutation } =
-  ordersApi;
+export const {
+  useGetOrdersQuery,
+  useGetOrderByIdQuery,
+  useCreateOrderMutation,
+  useUpdateOrderStatusMutation,
+} = ordersApi;

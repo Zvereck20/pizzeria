@@ -1,5 +1,7 @@
 export * from "./AdminIngredientDetailsPage";
 export * from "./AdminIngredientsPage";
 export * from "./AdminLoginPage";
+export * from "./AdminOrderDetailsPage";
+export * from "./AdminOrdersPage";
 export * from "./AdminProductsPage";
 export * from "./AdminProductDetailsPage";

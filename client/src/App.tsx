@@ -19,6 +19,8 @@ import {
   AdminIngredientsPage,
   AdminLayout,
   AdminLoginPage,
+  AdminOrderDetailsPage,
+  AdminOrdersPage,
   AdminProductDetailsPage,
   ProtectedAdminRoute,
 } from "@/admin";
@@ -58,6 +60,8 @@ export const App: FC = () => {
               <Route path="products/:id" element={<AdminProductDetailsPage />} />
               <Route path="ingredients" element={<AdminIngredientsPage />} />
               <Route path="ingredients/:id" element={<AdminIngredientDetailsPage />} />
+              <Route path="orders" element={<AdminOrdersPage />} />
+              <Route path="orders/:id" element={<AdminOrderDetailsPage />} />
             </Route>
           </Route>
         </Routes>
