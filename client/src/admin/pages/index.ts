@@ -5,3 +5,5 @@ export * from "./AdminOrderDetailsPage";
 export * from "./AdminOrdersPage";
 export * from "./AdminProductsPage";
 export * from "./AdminProductDetailsPage";
+export * from "./AdminStoreDetailsPage";
+export * from "./AdminStoresPage";
