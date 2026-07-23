@@ -136,16 +136,14 @@ export const AdminOrdersPage: FC = () => {
             </TableHead>
             <TableBody>
               {filteredOrders.map((order) => (
-                <TableRow
-                  key={order._id}
-                  hover
-                  component={RouterLink}
-                  to={`/admin/orders/${order._id}`}
-                  sx={{ color: "inherit", textDecoration: "none" }}
-                >
+                <TableRow key={order._id}>
                   <TableCell>{order.customer.phone}</TableCell>
                   <TableCell>
-                    <Link component="span" underline="hover">
+                    <Link
+                      component={RouterLink}
+                      to={`/admin/orders/${order._id}`}
+                      underline="hover"
+                    >
                       {order.number}
                     </Link>
                   </TableCell>
