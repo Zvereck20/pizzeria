@@ -19,7 +19,7 @@ router.post("/", validateBody(createVacancySchema), async (req, res) => {
 // PATCH api/admin/vacancies/id
 router.patch("/:id", validateBody(updateVacancySchema), async (req, res) => {
   try {
-    const updatedVacancy = await Vacancy.findByIdAndUpdate(req.params.id, body, {
+    const updatedVacancy = await Vacancy.findByIdAndUpdate(req.params.id, req.body, {
       returnDocument: "after",
     });
 
@@ -38,7 +38,7 @@ router.delete("/:id", async (req, res) => {
       return res.status(404).json({ message: "Vacancy not found" });
     }
 
-    await Vacancy.deleteOne();
+    await Vacancy.deleteOne({ _id: req.params.id });
     res.status(200).json({ message: `Vacancy ${req.params.id} was deleted` });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
