@@ -7,3 +7,5 @@ export * from "./AdminProductsPage";
 export * from "./AdminProductDetailsPage";
 export * from "./AdminStoreDetailsPage";
 export * from "./AdminStoresPage";
+export * from "./AdminBannerDetailsPage";
+export * from "./AdminBannersPage";
