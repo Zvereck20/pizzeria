@@ -67,7 +67,7 @@ router.delete("/:id", async (req, res) => {
         console.warn(`⚠ Не удалось удалить файл: ${filePath}`, err.message);
       }
     }
-    await Banner.deleteOne();
+    await Banner.deleteOne({ _id: req.params.id });
     res.status(200).json({ message: `Banner ${req.params.id} was deleted` });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
