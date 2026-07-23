@@ -1,12 +1,12 @@
 import { CheckoutFormValues } from "../checkout/validation";
 import { CartItem } from "../cart/types";
-import type { OrderItem, OrderRequest } from "./ordersTypes";
+import type { Order, OrderItem } from "./ordersTypes";
 
 export const mapCheckoutToOrder = (
   form: CheckoutFormValues,
   items: CartItem[],
   total: number,
-): OrderRequest => {
+): Order => {
   const orderItems = items.map(
     ({ productId, ingredients, name, quantity, itemPrice }): OrderItem => {
       const ingerdientsId = ingredients.map((i) => i._id);

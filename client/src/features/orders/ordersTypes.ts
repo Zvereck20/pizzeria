@@ -41,5 +41,13 @@ export interface Order {
 
 // export type OrderRequest = Omit<Order, "_id">;
 export interface OrderRequest extends Order {
+  _id: string;
   number: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface UpdateOrderStatusRequest {
+  id: string;
+  status: Order["status"];
 }
