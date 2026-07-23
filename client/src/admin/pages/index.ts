@@ -9,3 +9,5 @@ export * from "./AdminStoreDetailsPage";
 export * from "./AdminStoresPage";
 export * from "./AdminBannerDetailsPage";
 export * from "./AdminBannersPage";
+export * from "./AdminVacancyDetailsPage";
+export * from "./AdminVacanciesPage";
