@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import type { Product } from "@/features";
+import type { Product } from "../types";
 import { ProductCard } from "./ProductCard";
 
 export const ProductsList: FC<{ products: Product[] }> = ({ products }) => {

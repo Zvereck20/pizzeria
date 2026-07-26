@@ -1,18 +1,5 @@
 import { api } from "@/app/api";
-
-export interface AdminLoginRequest {
-  login: string;
-  password: string;
-}
-
-export interface AdminLoginResponse {
-  role: string;
-}
-
-export interface AdminUser {
-  login: string;
-  role: string;
-}
+import type { AdminLoginRequest, AdminLoginResponse, AdminUser } from "./types";
 
 const adminAuthApi = api.injectEndpoints({
   endpoints: (build) => ({

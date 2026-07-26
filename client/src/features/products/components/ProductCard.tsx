@@ -1,7 +1,8 @@
 import type { FC } from "react";
 import { useDispatch } from "react-redux";
 import { openProductModal } from "../state/productsUISlice";
-import { useCart, Product } from "@/features";
+import { useCart } from "../../cart/useCart";
+import type { Product } from "../types";
 import { formatPrice } from "@/lib/format";
 import { Button } from "@/components";
 import toast from "react-hot-toast";

@@ -1,1 +1,1 @@
-export * from "./AdminHeader";
+export { AdminHeader } from "./AdminHeader";

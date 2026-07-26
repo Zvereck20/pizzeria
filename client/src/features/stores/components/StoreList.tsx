@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import type { Store } from "../storeApi";
+import type { Store } from "../types";
 import { Address } from "@/pages";
 
 interface StoreListProps {
