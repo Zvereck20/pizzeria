@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useCart } from "@/features";
+import { useCart } from "../useCart";
 import { formatPrice } from "@/lib/format";
 import { Link } from "react-router-dom";
 

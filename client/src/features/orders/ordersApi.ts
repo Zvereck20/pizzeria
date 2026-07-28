@@ -1,17 +1,17 @@
 import { api } from "@/app/api";
-import type { Order, OrderRequest, UpdateOrderStatusRequest } from "./ordersTypes";
+import type { CreateOrderRequest, Order, UpdateOrderStatusRequest } from "./ordersTypes";
 
 const ordersApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getOrders: build.query<OrderRequest[], void>({
+    getOrders: build.query<Order[], void>({
       query: () => "/orders",
       providesTags: ["Orders"],
     }),
-    getOrderById: build.query<OrderRequest, string>({
+    getOrderById: build.query<Order, string>({
       query: (id) => `/orders/${id}`,
       providesTags: ["Orders"],
     }),
-    createOrder: build.mutation<OrderRequest, Order>({
+    createOrder: build.mutation<Order, CreateOrderRequest>({
       query: (body) => ({
         url: "/orders",
         method: "POST",
@@ -19,7 +19,7 @@ const ordersApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Orders"],
     }),
-    updateOrderStatus: build.mutation<OrderRequest, UpdateOrderStatusRequest>({
+    updateOrderStatus: build.mutation<Order, UpdateOrderStatusRequest>({
       query: ({ id, status }) => ({
         url: `/admin/orders/${id}`,
         method: "PATCH",

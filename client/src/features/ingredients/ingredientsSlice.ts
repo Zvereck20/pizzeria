@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { Ingredient } from "./ingredientsApi";
+import type { Ingredient } from "./types";
 
 interface IngredientsState {
   items: Ingredient[];

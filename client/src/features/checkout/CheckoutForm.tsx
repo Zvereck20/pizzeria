@@ -3,15 +3,13 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { InputMask } from "@react-input/mask";
 import Select from "react-select";
-import {
-  type CheckoutFormValues,
-  useCart,
-  QuantityControl,
-  checkoutSchema,
-  generate30MinSlots,
-  TimeSlot,
-} from "@/features";
-import { CheckoutAddressField } from "./address/components/СheckoutAddressField";
+import { checkoutSchema } from "./validation";
+import type { CheckoutFormValues } from "./validation";
+import { generate30MinSlots } from "./timeSlots";
+import type { TimeSlot } from "./timeSlots";
+import { useCart } from "../cart/useCart";
+import { QuantityControl } from "../cart/components/QuantityControl";
+import { CheckoutAddressField } from "./address/components/CheckoutAddressField";
 import { Input, Textarea, InputRadio } from "@/components";
 import { useGetStoresQuery } from "../stores/storeApi";
 

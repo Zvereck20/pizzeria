@@ -1,26 +1,10 @@
 import { api } from "@/app/api";
-
-export interface Vacancy {
-  _id: string;
-  name: string;
-  description: string;
-  isActive: boolean;
-}
-
-export interface VacancyRequest {
-  name: string;
-  description: string;
-  isActive: boolean;
-}
-
-export interface UpdateVacancyRequest {
-  id: string;
-  body: Partial<VacancyRequest>;
-}
-
-export interface DeleteVacancyResponse {
-  message: string;
-}
+import type {
+  DeleteVacancyResponse,
+  UpdateVacancyRequest,
+  Vacancy,
+  VacancyRequest,
+} from "./types";
 
 const vacanciesApi = api.injectEndpoints({
   endpoints: (build) => ({

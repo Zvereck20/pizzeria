@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import type { Vacancy } from "../vacanciesApi";
+import type { Vacancy } from "../types";
 import { Button } from "@/components/ui";
 
 interface VacanciesProps {

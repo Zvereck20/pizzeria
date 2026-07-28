@@ -29,7 +29,7 @@ export interface OrderAddress {
   comment?: string | null;
 }
 
-export interface Order {
+export interface CreateOrderRequest {
   items: OrderItem[];
   totalPrice: number;
   status: "pending" | "confirmed" | "delivering" | "done" | "canceled";
@@ -39,8 +39,7 @@ export interface Order {
   store: string;
 }
 
-// export type OrderRequest = Omit<Order, "_id">;
-export interface OrderRequest extends Order {
+export interface Order extends CreateOrderRequest {
   _id: string;
   number: number;
   createdAt?: string;
@@ -49,5 +48,5 @@ export interface OrderRequest extends Order {
 
 export interface UpdateOrderStatusRequest {
   id: string;
-  status: Order["status"];
+  status: CreateOrderRequest["status"];
 }

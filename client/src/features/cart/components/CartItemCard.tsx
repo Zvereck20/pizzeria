@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { formatPrice } from "@/lib/format";
-import { useCart } from "@/features";
+import { useCart } from "../useCart";
 import type { CartItem } from "@/features/cart/types";
 import { QuantityControl } from "./QuantityControl";
 import toast from "react-hot-toast";

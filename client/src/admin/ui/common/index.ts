@@ -1,4 +1,4 @@
-export * from "./AdminConfirmDialog";
-export * from "./AdminFormActions";
-export * from "./AdminImageUpload";
-export * from "./AdminNumberField";
+export { AdminConfirmDialog } from "./AdminConfirmDialog";
+export { AdminFormActions } from "./AdminFormActions";
+export { AdminImageUpload } from "./AdminImageUpload";
+export { AdminNumberField } from "./AdminNumberField";

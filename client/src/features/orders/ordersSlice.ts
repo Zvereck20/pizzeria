@@ -1,14 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { OrderRequest } from "./ordersTypes";
+import type { Order } from "./ordersTypes";
 
-const initialState: Partial<OrderRequest> = {};
+const initialState: Partial<Order> = {};
 
 const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    setOrder: (state, action: PayloadAction<OrderRequest>) => {
+    setOrder: (state, action: PayloadAction<Order>) => {
       return action.payload;
     },
   },

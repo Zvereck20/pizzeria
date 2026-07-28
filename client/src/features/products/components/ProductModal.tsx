@@ -9,13 +9,11 @@ import {
 } from "../state/selectors";
 import type { RootState } from "@/app/store";
 import { formatPrice } from "@/lib/format";
-import {
-  type Ingredient,
-  IngredientsPicker,
-  ProductInformation,
-  useCart,
-  useGetProductByIdQuery,
-} from "@/features";
+import type { Ingredient } from "@/features/ingredients/types";
+import { IngredientsPicker } from "@/features/ingredients/components/ingredientPicker";
+import type { ProductInformation } from "../types";
+import { useCart } from "../../cart/useCart";
+import { useGetProductByIdQuery } from "../productsApi";
 import type { CartIngredient } from "@/features/cart/types";
 import ReactModal from "react-modal";
 import { Button } from "@/components";

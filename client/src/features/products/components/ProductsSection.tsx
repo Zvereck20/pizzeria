@@ -1,7 +1,8 @@
 import { useEffect, useMemo, type FC } from "react";
 import { ProductsList } from "./ProductsList";
-import { Category } from "../constants/categories";
-import { Product, useGetProductsQuery } from "../productsApi";
+import type { Category } from "../constants/categories";
+import { useGetProductsQuery } from "../productsApi";
+import type { Product } from "../types";
 import { ErrorBlock } from "@/components";
 
 export const ProductsSection: FC<{ category: Category; label: string }> = ({
