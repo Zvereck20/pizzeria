@@ -4,9 +4,10 @@
  * @param {string} basePath
  * @returns {string|null}
  */
-export const urlFor = (file, req, basePath = "/uploads") => {
+export const urlFor = (file, basePath = "/uploads") => {
   if (!file) return null;
-  return `${req.protocol}://${req.get("host")}${basePath}/${file}`;
+  // return `${req.protocol}://${req.get("host")}${basePath}/${file}`;
+  return `${basePath}/${file}`;
 };
 
 /**
@@ -28,7 +29,7 @@ export const mapImages = (doc, req, mapping) => {
   for (const m of mapping) {
     // корень
     if (!m.path) {
-      if (out?.[m.field]) out[m.field] = urlFor(out[m.field], req);
+      if (out?.[m.field]) out[m.field] = urlFor(out[m.field]);
       continue;
     }
 
@@ -38,7 +39,7 @@ export const mapImages = (doc, req, mapping) => {
     if (Array.isArray(target)) {
       out[m.path] = target.map((item) => {
         const obj = typeof item.toObject === "function" ? item.toObject() : { ...item };
-        if (obj?.[m.field]) obj[m.field] = urlFor(obj[m.field], req);
+        if (obj?.[m.field]) obj[m.field] = urlFor(obj[m.field]);
         return obj;
       });
       continue;
@@ -46,8 +47,9 @@ export const mapImages = (doc, req, mapping) => {
 
     // вложенный объект
     if (target && typeof target === "object") {
-      const obj = typeof target.toObject === "function" ? target.toObject() : { ...target };
-      if (obj?.[m.field]) obj[m.field] = urlFor(obj[m.field], req);
+      const obj =
+        typeof target.toObject === "function" ? target.toObject() : { ...target };
+      if (obj?.[m.field]) obj[m.field] = urlFor(obj[m.field]);
       out[m.path] = obj;
     }
   }

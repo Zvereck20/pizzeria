@@ -21,6 +21,10 @@ export default defineConfig({
         target: "http://server:5000",
         changeOrigin: true,
       },
+      "/uploads": {
+        target: "http://server:5000",
+        changeOrigin: true,
+      },
     },
   },
 });
