@@ -6,7 +6,6 @@
  */
 export const urlFor = (file, basePath = "/uploads") => {
   if (!file) return null;
-  // return `${req.protocol}://${req.get("host")}${basePath}/${file}`;
   return `${basePath}/${file}`;
 };
 
