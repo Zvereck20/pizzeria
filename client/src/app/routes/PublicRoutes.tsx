@@ -1,9 +1,16 @@
-import type { FC } from "react";
 import { Route } from "react-router-dom";
-import { AboutPage, CheckoutPage, Home, NotFound, OrderSuccessPage, StoresPage, VacanciesPage } from "@/pages";
+import {
+  AboutPage,
+  CheckoutPage,
+  Home,
+  NotFound,
+  OrderSuccessPage,
+  StoresPage,
+  VacanciesPage,
+} from "@/pages";
 import { PublicLayout } from "@/app/layouts/PublicLayout";
 
-export const PublicRoutes: FC = () => (
+export const PublicRoutes = (
   <Route element={<PublicLayout />}>
     <Route path="/" element={<Home />} />
     <Route path="/cart" element={<CheckoutPage />} />

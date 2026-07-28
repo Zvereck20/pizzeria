@@ -5,7 +5,7 @@ import { PublicRoutes } from "./PublicRoutes";
 
 export const AppRoutes: FC = () => (
   <Routes>
-    <PublicRoutes />
-    <AdminRoutes />
+    {PublicRoutes}
+    {AdminRoutes}
   </Routes>
 );
