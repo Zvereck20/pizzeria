@@ -57,7 +57,6 @@ export const AdminProductDetailsPage: FC = () => {
     try {
       if (isCreateMode) {
         const response = await createProduct(body).unwrap();
-        console.log("create product", response._id);
         navigate(`/admin/products/${response._id}`);
         return;
       }
@@ -67,7 +66,6 @@ export const AdminProductDetailsPage: FC = () => {
       }
 
       await updateProduct({ id: productId, body }).unwrap();
-      console.log("update product", productId);
     } catch (error: unknown) {
       setImageErrorMessage(getApiErrorMessage(error, "image"));
       console.error("Product save error:", error);
@@ -81,7 +79,6 @@ export const AdminProductDetailsPage: FC = () => {
 
     try {
       await deleteProduct(productId).unwrap();
-      console.log("delete product", productId);
 
       navigate("/admin/products");
     } catch (error: unknown) {

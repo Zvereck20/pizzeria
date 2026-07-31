@@ -24,8 +24,7 @@ export const AdminLoginPage: FC = () => {
     setErrorMessage("");
 
     try {
-      const response = await adminLogin(values).unwrap();
-      console.log("Admin login success:", response);
+      await adminLogin(values).unwrap();
       reset();
       navigate("/admin/products");
     } catch (error: unknown) {

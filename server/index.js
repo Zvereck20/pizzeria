@@ -6,7 +6,6 @@ import session from "express-session";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
 import cors from "cors";
-import cookieParser from "cookie-parser";
 import path from "path";
 import * as routes from "./routes/index.js";
 import * as adminsRoutes from "./routes/admin/index.js";
@@ -41,7 +40,6 @@ app.use(
   }),
 );
 
-app.use(cookieParser());
 app.use(express.json());
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads"))); // Путь к папке с загруженными изображениями
 

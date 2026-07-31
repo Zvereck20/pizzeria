@@ -14,7 +14,7 @@ export const VacanciesPage: FC = () => {
   const [vacancyName, setVacancyName] = useState<string>();
   const [sendVacancyEmail] = useSendVacancyEmailMutation();
 
-  const onComfirmVacancy = (value: string) => {
+  const onConfirmVacancy = (value: string) => {
     setVacancyName(value);
     setIsOpen(true);
   };
@@ -29,20 +29,19 @@ export const VacanciesPage: FC = () => {
     };
 
     try {
-      const emailStatus = await sendVacancyEmail(emailVacancy);
+      await sendVacancyEmail(emailVacancy).unwrap();
 
       toast.success("Ваша заявка была отправлена");
-      console.log("email-status", emailStatus);
     } catch (error) {
       toast.error("Ошибка отправки заявки, попробуйте повторно через несколько минут!");
-      console.log(error);
+      console.error("Vacancy email error:", error);
     }
   };
 
   return (
     <section className="vacancies">
       <h1 className="vacancies__heading">Вакансии</h1>
-      <VacanciesList vacancies={data} onApply={onComfirmVacancy} />
+      <VacanciesList vacancies={data} onApply={onConfirmVacancy} />
       <VacancyModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}

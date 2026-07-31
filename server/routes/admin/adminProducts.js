@@ -2,8 +2,6 @@ import express from "express";
 import path from "path";
 import { promises as fs } from "fs";
 import Product from "../../models/Product.js";
-// import { parseJsonFields } from "../../middlewares/parseJsonFields.js";
-// import { toObjectIdArray } from "../../middlewares/toObjectIdArray.js";
 import { uploadImage } from "../../middlewares/upload.js";
 import { createProductSchema, updateProductSchema } from "../../validators/product.js";
 
@@ -31,11 +29,8 @@ const normalizeIngredients = (ingredients) => {
   return [ingredients];
 };
 
-// POST api/admin/products
-// router.post("/", upload.single("image"), parseJsonFields(["ingredients"]), toObjectIdArray("ingredients"), async (req, res) => {
 router.post("/", uploadImage, async (req, res) => {
   try {
-    // переписать допы на выражение перменной типо const ingre = req.body.ingredients ?? чтото : или чтото и потом вск скопом в body
     const ingredients = normalizeIngredients(req.body.ingredients);
     const information = JSON.parse(req.body.information);
 
@@ -55,8 +50,6 @@ router.post("/", uploadImage, async (req, res) => {
   }
 });
 
-// PATCH api/admin/products/id
-// router.patch("/:id", upload.single("image"), parseJsonFields(["ingredients"]), toObjectIdArray("ingredients"), async (req, res) => {
 router.patch("/:id", uploadImage, async (req, res) => {
   try {
     const ingredients = normalizeIngredients(req.body.ingredients);
