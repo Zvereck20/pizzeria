@@ -1,10 +1,10 @@
-import { FC } from "react";
+import type { FC } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { RootState } from "@/app/store";
+import type { RootState } from "@/app/store";
 
 export const OrderSuccessPage: FC = () => {
-  const order = useSelector((s: RootState) => s.order);
+  const order = useSelector((s: RootState) => s.order.current);
 
   if (!order) return <div>Заказ не найден</div>;
 

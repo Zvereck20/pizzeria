@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
 router.post("/order", async (req, res) => {
   const { to, subject, message } = req.body;
 
-  const defoultMessage = {
+  const defaultMessage = {
     from: "Zvereck27@yandex.ru",
     to,
     subject,
@@ -24,7 +24,7 @@ router.post("/order", async (req, res) => {
   };
 
   try {
-    const info = await transporter.sendMail(defoultMessage);
+    const info = await transporter.sendMail(defaultMessage);
     res.status(200).json({
       status: "success",
       message: "Email sent successfully",
@@ -38,9 +38,7 @@ router.post("/order", async (req, res) => {
 router.post("/vacancy", async (req, res) => {
   const { to, subject, message } = req.body;
 
-  console.log("message", message);
-
-  const defoultMessage = {
+  const defaultMessage = {
     from: "Zvereck27@yandex.ru",
     to,
     subject,
@@ -48,7 +46,7 @@ router.post("/vacancy", async (req, res) => {
   };
 
   try {
-    const info = await transporter.sendMail(defoultMessage);
+    const info = await transporter.sendMail(defaultMessage);
     res.status(200).json({
       status: "success",
       message: "Email sent successfully",

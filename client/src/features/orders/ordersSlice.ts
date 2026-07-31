@@ -2,14 +2,20 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { Order } from "./ordersTypes";
 
-const initialState: Partial<Order> = {};
+interface OrderState {
+  current: Order | null;
+}
+
+const initialState: OrderState = {
+  current: null,
+};
 
 const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
     setOrder: (state, action: PayloadAction<Order>) => {
-      return action.payload;
+      state.current = action.payload;
     },
   },
 });

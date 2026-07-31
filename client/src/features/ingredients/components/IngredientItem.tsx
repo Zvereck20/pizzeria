@@ -1,5 +1,4 @@
 import type { FC, KeyboardEventHandler } from "react";
-// import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components";
 import { formatPrice } from "@/lib/format";
 
 export type IngredientItemProps = {
@@ -44,7 +43,6 @@ export const IngredientItem: FC<IngredientItemProps> = ({
       onClick={handleClick}
       onKeyDown={onKeyDown}
       disabled={disabled}
-      // className="ingredient"
       className={`${checked ? "ingredient ingredient--checked" : "ingredient"}`}
     >
       <img
@@ -58,8 +56,6 @@ export const IngredientItem: FC<IngredientItemProps> = ({
       <span className="ingredient__price">
         {disabled ? "нет" : `+ ${formatPrice(price)}`}
       </span>
-
-      {/* <span className="ingredient__choise">{checked ? "выбран" : "добавить"}</span> */}
     </button>
   );
 };

@@ -138,8 +138,7 @@ export const AdminOrderDetailsPage: FC = () => {
     }
 
     try {
-      const response = await updateOrderStatus({ id, status }).unwrap();
-      console.log("Order status update success:", response);
+      await updateOrderStatus({ id, status }).unwrap();
     } catch (error: unknown) {
       console.error("Order status update error:", error);
     }

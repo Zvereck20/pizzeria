@@ -25,29 +25,6 @@ router.post("/", validateBody(adminLoginSchema), async (req, res) => {
   }
 });
 
-// // PATCH api/admin
-// router.patch("/:id", upload.single("image"), async (req, res) => {
-//   try {
-//     const image = req.file?.filename;
-//     const body = { ...req.body };
-
-//     if (image) body.image = image;
-
-//     const { error } = updateBannerSchema.validate(body);
-
-//     if (error) {
-//       return res.status(400).json({ message: error.message });
-//     }
-
-//     const updatedBanner = await Banner.findByIdAndUpdate(req.params.id, body, {
-//       returnDocument: "after",
-//     });
-//     res.status(201).json(updatedBanner);
-//   } catch (err) {
-//     res.status(400).json({ message: "Validation error", error: err.message });
-//   }
-// });
-
 router.get("/me", authorization, async (req, res, next) => {
   try {
     res.status(200).json(req.session.admin);

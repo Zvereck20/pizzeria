@@ -67,9 +67,6 @@ export const CheckoutForm: FC<{
 
   const onSubmit: SubmitHandler<CheckoutFormValues> = (data, e) => {
     e?.preventDefault();
-    // if (data.paymentMethod === "online") {
-    //   //переход на модуль оплаты банка
-    // }
 
     onSubmitOrder(data);
   };
