@@ -1,7 +1,6 @@
 import { useMemo, useState, type FC } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import {
-  Button,
   Link,
   Paper,
   Stack,
@@ -11,8 +10,9 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography,
 } from "@mui/material";
+import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
+import { AdminPageState } from "@/admin/ui/common/AdminPageState";
 import { useGetBannersQuery } from "@/features/banners";
 
 export const AdminBannersPage: FC = () => {
@@ -26,10 +26,7 @@ export const AdminBannersPage: FC = () => {
 
   return (
     <Stack spacing={3}>
-      <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
-        <Typography component="h1" variant="h4">Banners</Typography>
-        <Button component={RouterLink} to="/admin/banners/new" variant="contained">+</Button>
-      </Stack>
+      <AdminPageHeader title="Banners" createPath="/admin/banners/new" />
       <Paper sx={{ p: 2 }}>
         <TextField
           label="Search by banner name"
@@ -38,11 +35,14 @@ export const AdminBannersPage: FC = () => {
           fullWidth
         />
       </Paper>
-      {isLoading && <Typography>Loading banners...</Typography>}
-      {isError && <Typography color="error">Failed to load banners</Typography>}
-      {!isLoading && !isError && filteredBanners.length === 0 && (
-        <Typography color="text.secondary">No banners found</Typography>
-      )}
+      <AdminPageState
+        isLoading={isLoading}
+        isError={isError}
+        isEmpty={filteredBanners.length === 0}
+        loadingText="Loading banners..."
+        errorText="Failed to load banners"
+        emptyText="No banners found"
+      />
       {!isLoading && !isError && filteredBanners.length > 0 && (
         <Paper>
           <Table>

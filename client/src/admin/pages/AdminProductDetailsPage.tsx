@@ -1,13 +1,14 @@
 import { useState, type FC } from "react";
-import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { useNavigate, useParams } from "react-router-dom";
 import { Stack, Typography } from "@mui/material";
 import { AdminConfirmDialog } from "@/admin/ui/common/AdminConfirmDialog";
+import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
 import { ProductDetailsForm } from "@/admin/ui/product/ProductDetailsForm";
 import {
   buildProductFormData,
   type ProductFormValues,
 } from "@/admin/utils/buildProductFormData";
+import { getApiErrorMessage } from "@/admin/utils/getApiErrorMessage";
 import { useGetIngredientsQuery } from "@/features/ingredients";
 import {
   useCreateProductMutation,
@@ -15,22 +16,6 @@ import {
   useGetProductByIdQuery,
   useUpdateProductMutation,
 } from "@/features/products";
-
-interface ApiErrorData {
-  message?: string;
-  field?: string;
-}
-
-const getImageErrorMessage = (error: unknown) => {
-  const queryError = error as FetchBaseQueryError;
-  const data = queryError.data as ApiErrorData | undefined;
-
-  if (data?.field === "image" && data.message) {
-    return data.message;
-  }
-
-  return "";
-};
 
 export const AdminProductDetailsPage: FC = () => {
   const { id } = useParams();
@@ -84,7 +69,7 @@ export const AdminProductDetailsPage: FC = () => {
       await updateProduct({ id: productId, body }).unwrap();
       console.log("update product", productId);
     } catch (error: unknown) {
-      setImageErrorMessage(getImageErrorMessage(error));
+      setImageErrorMessage(getApiErrorMessage(error, "image"));
       console.error("Product save error:", error);
     }
   };
@@ -118,9 +103,7 @@ export const AdminProductDetailsPage: FC = () => {
 
   return (
     <Stack spacing={3}>
-      <Typography component="h1" variant="h4">
-        {isCreateMode ? "Create product" : product?.name}
-      </Typography>
+      <AdminPageHeader title={isCreateMode ? "Create product" : product?.name} />
 
       <ProductDetailsForm
         product={product}

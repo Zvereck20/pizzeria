@@ -23,6 +23,7 @@ import {
 } from "@/features/orders";
 import { useGetIngredientsQuery } from "@/features/ingredients";
 import { useGetStoresQuery } from "@/features/stores";
+import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
 
 const orderStatuses: Order["status"][] = [
   "pending",
@@ -158,9 +159,7 @@ export const AdminOrderDetailsPage: FC = () => {
 
   return (
     <Stack spacing={3}>
-      <Typography component="h1" variant="h4">
-        Order {order.number}
-      </Typography>
+      <AdminPageHeader title={`Order ${order.number}`} />
 
       <Paper sx={{ p: 3 }}>
         <Stack spacing={2}>

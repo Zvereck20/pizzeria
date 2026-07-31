@@ -1,7 +1,6 @@
 import { useMemo, useState, type FC } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import {
-  Button,
   Link,
   Paper,
   Stack,
@@ -11,8 +10,9 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography,
 } from "@mui/material";
+import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
+import { AdminPageState } from "@/admin/ui/common/AdminPageState";
 import { useGetStoresQuery } from "@/features/stores";
 
 export const AdminStoresPage: FC = () => {
@@ -29,14 +29,7 @@ export const AdminStoresPage: FC = () => {
 
   return (
     <Stack spacing={3}>
-      <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
-        <Typography component="h1" variant="h4">
-          Stores
-        </Typography>
-        <Button component={RouterLink} to="/admin/stores/new" variant="contained">
-          +
-        </Button>
-      </Stack>
+      <AdminPageHeader title="Stores" createPath="/admin/stores/new" />
 
       <Paper sx={{ p: 2 }}>
         <TextField
@@ -47,12 +40,14 @@ export const AdminStoresPage: FC = () => {
         />
       </Paper>
 
-      {isLoading && <Typography>Loading stores...</Typography>}
-      {isError && <Typography color="error">Failed to load stores</Typography>}
-
-      {!isLoading && !isError && filteredStores.length === 0 && (
-        <Typography color="text.secondary">No stores found</Typography>
-      )}
+      <AdminPageState
+        isLoading={isLoading}
+        isError={isError}
+        isEmpty={filteredStores.length === 0}
+        loadingText="Loading stores..."
+        errorText="Failed to load stores"
+        emptyText="No stores found"
+      />
 
       {!isLoading && !isError && filteredStores.length > 0 && (
         <Paper>

@@ -14,8 +14,9 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography,
 } from "@mui/material";
+import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
+import { AdminPageState } from "@/admin/ui/common/AdminPageState";
 import { useGetOrdersQuery } from "@/features/orders";
 
 const orderStatuses = ["pending", "confirmed", "delivering", "done", "canceled"];
@@ -50,9 +51,7 @@ export const AdminOrdersPage: FC = () => {
 
   return (
     <Stack spacing={3}>
-      <Typography component="h1" variant="h4">
-        Orders
-      </Typography>
+      <AdminPageHeader title="Orders" />
 
       <Paper sx={{ p: 2 }}>
         <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
@@ -113,12 +112,14 @@ export const AdminOrdersPage: FC = () => {
         </Stack>
       </Paper>
 
-      {isLoading && <Typography>Loading orders...</Typography>}
-      {isError && <Typography color="error">Failed to load orders</Typography>}
-
-      {!isLoading && !isError && filteredOrders.length === 0 && (
-        <Typography color="text.secondary">No orders found</Typography>
-      )}
+      <AdminPageState
+        isLoading={isLoading}
+        isError={isError}
+        isEmpty={filteredOrders.length === 0}
+        loadingText="Loading orders..."
+        errorText="Failed to load orders"
+        emptyText="No orders found"
+      />
 
       {!isLoading && !isError && filteredOrders.length > 0 && (
         <Paper>

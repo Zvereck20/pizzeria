@@ -2,7 +2,6 @@ import { useMemo, useState, type FC } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import {
   Box,
-  Button,
   Link,
   Paper,
   MenuItem,
@@ -16,6 +15,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
+import { AdminPageState } from "@/admin/ui/common/AdminPageState";
 import { useGetProductsQuery, type Product } from "@/features/products";
 
 interface ProductsByCategory {
@@ -76,19 +77,7 @@ export const AdminProductsPage: FC = () => {
 
   return (
     <Stack spacing={3}>
-      <Stack
-        direction="row"
-        spacing={2}
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <Typography component="h1" variant="h4">
-          Products
-        </Typography>
-        <Button component={RouterLink} to="/admin/products/new" variant="contained">
-          +
-        </Button>
-      </Stack>
+      <AdminPageHeader title="Products" createPath="/admin/products/new" />
 
       <Paper sx={{ p: 2 }}>
         <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
@@ -110,12 +99,14 @@ export const AdminProductsPage: FC = () => {
         </Stack>
       </Paper>
 
-      {isLoading && <Typography>Loading products...</Typography>}
-      {isError && <Typography color="error">Failed to load products</Typography>}
-
-      {!isLoading && !isError && productsByCategory.length === 0 && (
-        <Typography color="text.secondary">No products found</Typography>
-      )}
+      <AdminPageState
+        isLoading={isLoading}
+        isError={isError}
+        isEmpty={productsByCategory.length === 0}
+        loadingText="Loading products..."
+        errorText="Failed to load products"
+        emptyText="No products found"
+      />
 
       {productsByCategory.map(({ category, products: categoryProducts }) => (
         <Box key={category}>

@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { AdminConfirmDialog } from "@/admin/ui/common/AdminConfirmDialog";
+import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
 import {
   useCreateStoreMutation,
   useDeleteStoreMutation,
@@ -85,9 +86,7 @@ export const AdminStoreDetailsPage: FC = () => {
 
   return (
     <Stack spacing={3}>
-      <Typography component="h1" variant="h4">
-        {isCreateMode ? "Create store" : store?.name}
-      </Typography>
+      <AdminPageHeader title={isCreateMode ? "Create store" : store?.name} />
 
       <Paper component="form" onSubmit={handleSubmit} sx={{ p: 3 }}>
         <Stack spacing={2}>
