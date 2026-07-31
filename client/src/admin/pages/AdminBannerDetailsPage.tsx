@@ -1,25 +1,20 @@
 import { useState, type FC } from "react";
-import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { useNavigate, useParams } from "react-router-dom";
 import { Stack, Typography } from "@mui/material";
 import { AdminConfirmDialog } from "@/admin/ui/common/AdminConfirmDialog";
+import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
 import { BannerDetailsForm } from "@/admin/ui/banner/BannerDetailsForm";
-import { buildBannerFormData, type BannerFormValues } from "@/admin/utils";
+import {
+  buildBannerFormData,
+  type BannerFormValues,
+} from "@/admin/utils";
+import { getApiErrorMessage } from "@/admin/utils/getApiErrorMessage";
 import {
   useCreateBannerMutation,
   useDeleteBannerMutation,
   useGetBannerByIdQuery,
   useUpdateBannerMutation,
 } from "@/features/banners";
-
-interface ApiErrorData { message?: string; }
-
-const getImageErrorMessage = (error: unknown) => {
-  const queryError = error as FetchBaseQueryError;
-  const data = queryError.data as ApiErrorData | undefined;
-
-  return data?.message || "";
-};
 
 export const AdminBannerDetailsPage: FC = () => {
   const { id } = useParams();
@@ -46,7 +41,7 @@ export const AdminBannerDetailsPage: FC = () => {
       }
       if (bannerId) await updateBanner({ id: bannerId, body }).unwrap();
     } catch (error: unknown) {
-      setImageErrorMessage(getImageErrorMessage(error));
+      setImageErrorMessage(getApiErrorMessage(error));
       console.error("Banner save error:", error);
     }
   };
@@ -69,9 +64,7 @@ export const AdminBannerDetailsPage: FC = () => {
 
   return (
     <Stack spacing={3}>
-      <Typography component="h1" variant="h4">
-        {isCreateMode ? "Create banner" : banner?.name}
-      </Typography>
+      <AdminPageHeader title={isCreateMode ? "Create banner" : banner?.name} />
       <BannerDetailsForm
         banner={banner}
         isCreateMode={isCreateMode}

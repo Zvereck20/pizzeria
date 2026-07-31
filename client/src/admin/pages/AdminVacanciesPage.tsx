@@ -1,7 +1,6 @@
 import { useMemo, useState, type FC } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import {
-  Button,
   Link,
   Paper,
   Stack,
@@ -11,8 +10,9 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography,
 } from "@mui/material";
+import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
+import { AdminPageState } from "@/admin/ui/common/AdminPageState";
 import { useGetVacanciesQuery } from "@/features/vacancies";
 
 export const AdminVacanciesPage: FC = () => {
@@ -26,10 +26,7 @@ export const AdminVacanciesPage: FC = () => {
 
   return (
     <Stack spacing={3}>
-      <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
-        <Typography component="h1" variant="h4">Vacancies</Typography>
-        <Button component={RouterLink} to="/admin/vacancies/new" variant="contained">+</Button>
-      </Stack>
+      <AdminPageHeader title="Vacancies" createPath="/admin/vacancies/new" />
       <Paper sx={{ p: 2 }}>
         <TextField
           label="Search by vacancy name"
@@ -38,11 +35,14 @@ export const AdminVacanciesPage: FC = () => {
           fullWidth
         />
       </Paper>
-      {isLoading && <Typography>Loading vacancies...</Typography>}
-      {isError && <Typography color="error">Failed to load vacancies</Typography>}
-      {!isLoading && !isError && filteredVacancies.length === 0 && (
-        <Typography color="text.secondary">No vacancies found</Typography>
-      )}
+      <AdminPageState
+        isLoading={isLoading}
+        isError={isError}
+        isEmpty={filteredVacancies.length === 0}
+        loadingText="Loading vacancies..."
+        errorText="Failed to load vacancies"
+        emptyText="No vacancies found"
+      />
       {!isLoading && !isError && filteredVacancies.length > 0 && (
         <Paper>
           <Table>

@@ -1,30 +1,20 @@
 import { useState, type FC } from "react";
-import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { useNavigate, useParams } from "react-router-dom";
 import { Stack, Typography } from "@mui/material";
 import { AdminConfirmDialog } from "@/admin/ui/common/AdminConfirmDialog";
+import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
 import { IngredientDetailsForm } from "@/admin/ui/ingredient/IngredientDetailsForm";
 import {
   buildIngredientFormData,
   type IngredientFormValues,
 } from "@/admin/utils";
+import { getApiErrorMessage } from "@/admin/utils/getApiErrorMessage";
 import {
   useCreateIngredientMutation,
   useDeleteIngredientMutation,
   useGetIngredientByIdQuery,
   useUpdateIngredientMutation,
 } from "@/features/ingredients";
-
-interface ApiErrorData {
-  message?: string;
-}
-
-const getImageErrorMessage = (error: unknown) => {
-  const queryError = error as FetchBaseQueryError;
-  const data = queryError.data as ApiErrorData | undefined;
-
-  return data?.message || "";
-};
 
 export const AdminIngredientDetailsPage: FC = () => {
   const { id } = useParams();
@@ -73,7 +63,7 @@ export const AdminIngredientDetailsPage: FC = () => {
 
       await updateIngredient({ id: ingredientId, body }).unwrap();
     } catch (error: unknown) {
-      setImageErrorMessage(getImageErrorMessage(error));
+      setImageErrorMessage(getApiErrorMessage(error));
       console.error("Ingredient save error:", error);
     }
   };
@@ -105,9 +95,9 @@ export const AdminIngredientDetailsPage: FC = () => {
 
   return (
     <Stack spacing={3}>
-      <Typography component="h1" variant="h4">
-        {isCreateMode ? "Create ingredient" : ingredient?.name}
-      </Typography>
+      <AdminPageHeader
+        title={isCreateMode ? "Create ingredient" : ingredient?.name}
+      />
 
       <IngredientDetailsForm
         ingredient={ingredient}

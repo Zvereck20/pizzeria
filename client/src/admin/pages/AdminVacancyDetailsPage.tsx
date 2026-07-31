@@ -2,6 +2,7 @@ import { useState, type FC } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Stack, Typography } from "@mui/material";
 import { AdminConfirmDialog } from "@/admin/ui/common/AdminConfirmDialog";
+import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
 import { VacancyDetailsForm } from "@/admin/ui/vacancy/VacancyDetailsForm";
 import {
   useCreateVacancyMutation,
@@ -55,9 +56,7 @@ export const AdminVacancyDetailsPage: FC = () => {
 
   return (
     <Stack spacing={3}>
-      <Typography component="h1" variant="h4">
-        {isCreateMode ? "Create vacancy" : vacancy?.name}
-      </Typography>
+      <AdminPageHeader title={isCreateMode ? "Create vacancy" : vacancy?.name} />
       <VacancyDetailsForm
         vacancy={vacancy}
         isCreateMode={isCreateMode}

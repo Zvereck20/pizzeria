@@ -1,7 +1,6 @@
 import { useMemo, useState, type FC } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import {
-  Button,
   Link,
   Paper,
   Stack,
@@ -11,8 +10,9 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography,
 } from "@mui/material";
+import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
+import { AdminPageState } from "@/admin/ui/common/AdminPageState";
 import { useGetIngredientsQuery } from "@/features/ingredients";
 
 export const AdminIngredientsPage: FC = () => {
@@ -29,19 +29,7 @@ export const AdminIngredientsPage: FC = () => {
 
   return (
     <Stack spacing={3}>
-      <Stack
-        direction="row"
-        spacing={2}
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <Typography component="h1" variant="h4">
-          Ingredients
-        </Typography>
-        <Button component={RouterLink} to="/admin/ingredients/new" variant="contained">
-          +
-        </Button>
-      </Stack>
+      <AdminPageHeader title="Ingredients" createPath="/admin/ingredients/new" />
 
       <Paper sx={{ p: 2 }}>
         <TextField
@@ -52,12 +40,14 @@ export const AdminIngredientsPage: FC = () => {
         />
       </Paper>
 
-      {isLoading && <Typography>Loading ingredients...</Typography>}
-      {isError && <Typography color="error">Failed to load ingredients</Typography>}
-
-      {!isLoading && !isError && filteredIngredients.length === 0 && (
-        <Typography color="text.secondary">No ingredients found</Typography>
-      )}
+      <AdminPageState
+        isLoading={isLoading}
+        isError={isError}
+        isEmpty={filteredIngredients.length === 0}
+        loadingText="Loading ingredients..."
+        errorText="Failed to load ingredients"
+        emptyText="No ingredients found"
+      />
 
       {!isLoading && !isError && filteredIngredients.length > 0 && (
         <Paper>
