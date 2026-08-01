@@ -18,6 +18,8 @@ const OrderItemSchema = new mongoose.Schema(
     quantity: {
       type: Number,
       required: true,
+      min: 1,
+      validate: Number.isInteger,
     },
     unitPrice: {
       type: Number,
@@ -32,6 +34,7 @@ const OrderSchema = new mongoose.Schema(
     items: {
       type: [OrderItemSchema],
       required: true,
+      validate: (items) => items.length > 0,
     },
     totalPrice: {
       type: Number,
@@ -52,6 +55,8 @@ const OrderSchema = new mongoose.Schema(
       persons: {
         type: Number,
         required: true,
+        min: 1,
+        validate: Number.isInteger,
       },
       paymentMethod: {
         type: String,
@@ -72,6 +77,7 @@ const OrderSchema = new mongoose.Schema(
       },
     },
     address: {
+      city: String,
       street: String,
       building: String,
       appartment: String,

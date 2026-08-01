@@ -3,7 +3,7 @@ import Banner from "../../models/Banner.js";
 import path from "path";
 import { promises as fs } from "fs";
 import { uploadImage } from "../../middlewares/upload.js";
-import { createBannerSchema, updateBannerSchema } from "../../validators/Banner.js";
+import { createBannerSchema, updateBannerSchema } from "../../validators/banner.js";
 
 const router = express.Router();
 

@@ -22,14 +22,13 @@ export const VacanciesPage: FC = () => {
   const sendVacancy = async (data: VacancyFormValues) => {
     const { name, email, message } = data;
 
-    const emailVacancy = {
-      to: "Zvereck27@yandex.ru",
-      subject: `Отклик на вакансию ${vacancyName}`,
-      message: `<h1>Соискатель ${name} отправил отклик на вакансию ${vacancyName}</h1><p>Электронная почта сосикателя: ${email}</p>${message ? "Комментарий к вакансии: " + message : "Отклик без комментариев"}`,
-    };
-
     try {
-      await sendVacancyEmail(emailVacancy).unwrap();
+      await sendVacancyEmail({
+        name,
+        email,
+        message: message ?? "",
+        vacancyName: vacancyName ?? "",
+      }).unwrap();
 
       toast.success("Ваша заявка была отправлена");
     } catch (error) {

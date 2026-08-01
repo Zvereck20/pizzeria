@@ -6,6 +6,12 @@ export interface OrderItem {
   unitPrice: number;
 }
 
+export interface CreateOrderItemRequest {
+  productId: string;
+  ingredients?: string[];
+  quantity: number;
+}
+
 interface OrderDetails {
   orderType: "delivery" | "pickup";
   scheduledTime?: string | null;
@@ -30,17 +36,20 @@ export interface OrderAddress {
 }
 
 export interface CreateOrderRequest {
-  items: OrderItem[];
-  totalPrice: number;
-  status: "pending" | "confirmed" | "delivering" | "done" | "canceled";
+  items: CreateOrderItemRequest[];
   orderDetails: OrderDetails;
   customer: OrderCustomer;
   address?: OrderAddress;
   store: string;
 }
 
-export interface Order extends CreateOrderRequest {
+export type OrderStatus = "pending" | "confirmed" | "delivering" | "done" | "canceled";
+
+export interface Order extends Omit<CreateOrderRequest, "items"> {
   _id: string;
+  items: OrderItem[];
+  totalPrice: number;
+  status: OrderStatus;
   number: number;
   createdAt?: string;
   updatedAt?: string;
@@ -48,5 +57,5 @@ export interface Order extends CreateOrderRequest {
 
 export interface UpdateOrderStatusRequest {
   id: string;
-  status: CreateOrderRequest["status"];
+  status: OrderStatus;
 }

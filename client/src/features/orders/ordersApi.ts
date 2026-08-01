@@ -4,11 +4,11 @@ import type { CreateOrderRequest, Order, UpdateOrderStatusRequest } from "./orde
 const ordersApi = api.injectEndpoints({
   endpoints: (build) => ({
     getOrders: build.query<Order[], void>({
-      query: () => "/orders",
+      query: () => "/admin/orders",
       providesTags: ["Orders"],
     }),
     getOrderById: build.query<Order, string>({
-      query: (id) => `/orders/${id}`,
+      query: (id) => `/admin/orders/${id}`,
       providesTags: ["Orders"],
     }),
     createOrder: build.mutation<Order, CreateOrderRequest>({

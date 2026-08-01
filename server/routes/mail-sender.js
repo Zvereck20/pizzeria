@@ -1,59 +1,21 @@
 import express from "express";
-import nodemailer from "nodemailer";
+import { validateBody } from "../middlewares/validateBody.js";
+import { vacancyEmailSchema } from "../validators/mail.js";
+import { sendVacancyNotification } from "../utils/mail.js";
 
 const router = express.Router();
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.yandex.ru",
-  port: 465,
-  secure: true,
-  auth: {
-    user: "Zvereck27@yandex.ru",
-    pass: "phenifbjekqqsjhf",
-  },
-});
-
-router.post("/order", async (req, res) => {
-  const { to, subject, message } = req.body;
-
-  const defaultMessage = {
-    from: "Zvereck27@yandex.ru",
-    to,
-    subject,
-    html: message,
-  };
-
+router.post("/vacancy", validateBody(vacancyEmailSchema), async (req, res) => {
   try {
-    const info = await transporter.sendMail(defaultMessage);
+    await sendVacancyNotification(req.body);
+
     res.status(200).json({
       status: "success",
       message: "Email sent successfully",
-      info: info.messageId,
     });
   } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-router.post("/vacancy", async (req, res) => {
-  const { to, subject, message } = req.body;
-
-  const defaultMessage = {
-    from: "Zvereck27@yandex.ru",
-    to,
-    subject,
-    html: message,
-  };
-
-  try {
-    const info = await transporter.sendMail(defaultMessage);
-    res.status(200).json({
-      status: "success",
-      message: "Email sent successfully",
-      info: info.messageId,
-    });
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Vacancy notification failed");
+    res.status(502).json({ message: "Failed to send email" });
   }
 });
 
