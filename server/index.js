@@ -58,11 +58,7 @@ app.use(
   }),
 );
 
-app.use(
-  helmet({
-    crossOriginResourcePolicy: { policy: "cross-origin" },
-  }),
-);
+app.use(helmet());
 
 app.use(
   session({
@@ -83,7 +79,11 @@ app.use(
 );
 
 app.use(express.json({ limit: "1mb" }));
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use(
+  "/uploads",
+  helmet.crossOriginResourcePolicy({ policy: "cross-origin" }),
+  express.static(path.join(process.cwd(), "uploads")),
+);
 
 app.use("/api", apiLimiter);
 app.use("/api/products", routes.productRoutes);
