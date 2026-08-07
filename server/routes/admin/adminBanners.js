@@ -22,7 +22,7 @@ router.post("/", uploadImage, async (req, res) => {
     const banner = await Banner.create(body);
     res.status(201).json(banner);
   } catch (err) {
-    res.status(400).json({ message: "Validation error", error: err.message });
+    res.status(400).json({ message: "Validation error" });
   }
 });
 
@@ -45,7 +45,7 @@ router.patch("/:id", uploadImage, async (req, res) => {
     });
     res.status(201).json(updatedBanner);
   } catch (err) {
-    res.status(400).json({ message: "Validation error", error: err.message });
+    res.status(400).json({ message: "Validation error" });
   }
 });
 
@@ -70,7 +70,7 @@ router.delete("/:id", async (req, res) => {
     await Banner.deleteOne({ _id: req.params.id });
     res.status(200).json({ message: `Banner ${req.params.id} was deleted` });
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    res.status(500).json({ message: "Server error" });
   }
 });
 

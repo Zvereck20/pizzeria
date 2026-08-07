@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
 
     res.json(data);
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    res.status(500).json({ message: "Server error" });
   }
 });
 
@@ -36,7 +36,7 @@ router.get("/:id", async (req, res) => {
 
     res.json(data);
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    res.status(500).json({ message: "Server error" });
   }
 });
 

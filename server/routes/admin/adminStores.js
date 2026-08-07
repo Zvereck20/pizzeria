@@ -11,7 +11,7 @@ router.post("/", validateBody(createStoreSchema), async (req, res) => {
     const store = await Store.create(req.body);
     res.status(201).json(store);
   } catch (err) {
-    res.status(400).json({ message: "Validation error", error: err.message });
+    res.status(400).json({ message: "Validation error" });
   }
 });
 
@@ -25,7 +25,7 @@ router.patch("/:id", validateBody(updateStoreSchema), async (req, res) => {
     );
     res.status(201).json(updatedStore);
   } catch (err) {
-    res.status(400).json({ message: "Validation error", error: err.message });
+    res.status(400).json({ message: "Validation error" });
   }
 });
 
@@ -35,7 +35,7 @@ router.delete("/:id", async (req, res) => {
     await Store.deleteOne({ _id: req.params.id });
     res.status(201).json({ message: `Store ${req.params.id} was deleted` });
   } catch (err) {
-    res.status(400).json({ message: "Server error", error: err.message });
+    res.status(400).json({ message: "Server error" });
   }
 });
 
