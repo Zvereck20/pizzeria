@@ -10,4 +10,4 @@ export const updateVacancySchema = Joi.object({
   name: Joi.string().min(2),
   description: Joi.string().min(10),
   isActive: Joi.boolean(),
-});
+}).min(1);

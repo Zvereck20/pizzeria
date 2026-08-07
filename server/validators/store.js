@@ -11,7 +11,7 @@ export const createStoreSchema = Joi.object({
     lan: Joi.number().required(),
   }),
   isActive: Joi.boolean().optional(),
-});
+}).min(1);
 
 export const updateStoreSchema = Joi.object({
   name: Joi.string().min(2),
@@ -24,4 +24,4 @@ export const updateStoreSchema = Joi.object({
     lan: Joi.number(),
   }),
   isActive: Joi.boolean().optional(),
-});
+}).min(1);

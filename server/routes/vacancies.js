@@ -1,5 +1,6 @@
 import express from "express";
 import Vacancy from "../models/Vacancy.js";
+import { validateObjectId } from "../middlewares/validateObjectId.js";
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ router.get("/", async (req, res) => {
 });
 
 // GET api/vacancies/id
-router.get("/:id", async (req, res) => {
+router.get("/:id", validateObjectId, async (req, res) => {
   try {
     const vacancy = await Vacancy.findById(req.params.id);
 

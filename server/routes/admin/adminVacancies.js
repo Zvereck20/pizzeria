@@ -1,6 +1,7 @@
 import express from "express";
 import Vacancy from "../../models/Vacancy.js";
 import { validateBody } from "../../middlewares/validateBody.js";
+import { validateObjectId } from "../../middlewares/validateObjectId.js";
 import { createVacancySchema, updateVacancySchema } from "../../validators/vacancy.js";
 
 const router = express.Router();
@@ -17,20 +18,29 @@ router.post("/", validateBody(createVacancySchema), async (req, res) => {
 });
 
 // PATCH api/admin/vacancies/id
-router.patch("/:id", validateBody(updateVacancySchema), async (req, res) => {
+router.patch(
+  "/:id",
+  validateObjectId,
+  validateBody(updateVacancySchema),
+  async (req, res) => {
   try {
     const updatedVacancy = await Vacancy.findByIdAndUpdate(req.params.id, req.body, {
       returnDocument: "after",
     });
 
+    if (!updatedVacancy) {
+      return res.status(404).json({ message: "Vacancy not found" });
+    }
+
     res.status(201).json(updatedVacancy);
   } catch (err) {
     res.status(400).json({ message: "Validation error" });
   }
-});
+  },
+);
 
 // DELETE api/admin/vacancies/id
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", validateObjectId, async (req, res) => {
   try {
     const vacancy = await Vacancy.findById(req.params.id);
 

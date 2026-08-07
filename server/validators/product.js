@@ -49,9 +49,9 @@ export const updateProductSchema = Joi.object({
     energy: Joi.number(),
     proteins: Joi.number(),
     fats: Joi.number(),
-    carbohydrates: Joi.number().required(),
-  }),
+    carbohydrates: Joi.number(),
+  }).min(1),
   ingredients: Joi.array().items(Joi.string().hex().length(24)),
   image: Joi.string(),
   available: Joi.boolean(),
-});
+}).min(1);

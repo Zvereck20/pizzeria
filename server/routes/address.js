@@ -1,10 +1,25 @@
 import express from "express";
+import Joi from "joi";
 
 const router = express.Router();
+const addressQuerySchema = Joi.object({
+  query: Joi.string().trim().max(200).allow("").default(""),
+}).unknown(true);
 
 router.get("/suggest", async (req, res, next) => {
   try {
-    const query = (req.query.query ?? "").toString();
+    const { error, value } = addressQuerySchema.validate(req.query, {
+      abortEarly: false,
+    });
+
+    if (error) {
+      return res.status(400).json({
+        message: "Validation error",
+        details: error.details.map(({ message }) => message),
+      });
+    }
+
+    const query = value.query;
 
     if (!query.trim()) {
       return res.json({ suggestions: [] });
@@ -23,8 +38,7 @@ router.get("/suggest", async (req, res, next) => {
     const locations = [
       {
         city_fias_id:
-          process.env.DADATA_CITY_FIAS_ID ??
-          "a4859da8-9977-4b62-8436-4e1b98c5d13f",
+          process.env.DADATA_CITY_FIAS_ID || "a4859da8-9977-4b62-8436-4e1b98c5d13f",
       },
     ];
 

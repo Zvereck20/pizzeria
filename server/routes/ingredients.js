@@ -1,6 +1,7 @@
 import express from "express";
 import Ingredient from "../models/Ingredient.js";
 import { mapImages } from "../utils/mapImages.js";
+import { validateObjectId } from "../middlewares/validateObjectId.js";
 
 const router = express.Router();
 
@@ -20,7 +21,7 @@ router.get("/", async (req, res) => {
 });
 
 // GET api/ingredients/id
-router.get("/:id", async (req, res) => {
+router.get("/:id", validateObjectId, async (req, res) => {
   try {
     const data = await Ingredient.findById(req.params.id);
 
