@@ -38,8 +38,7 @@ router.get("/suggest", async (req, res, next) => {
     const locations = [
       {
         city_fias_id:
-          process.env.DADATA_CITY_FIAS_ID ??
-          "a4859da8-9977-4b62-8436-4e1b98c5d13f",
+          process.env.DADATA_CITY_FIAS_ID || "a4859da8-9977-4b62-8436-4e1b98c5d13f",
       },
     ];
 
