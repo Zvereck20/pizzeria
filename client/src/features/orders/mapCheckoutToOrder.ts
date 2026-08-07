@@ -48,6 +48,7 @@ export const mapCheckoutToOrder = (
       phone: form.phone,
     },
     address,
-    store: form.storeId || "697ff148392e4936738d74c6",
+    // store: form.storeId || "697ff148392e4936738d74c6",
+    store: form.storeId!,
   };
 };

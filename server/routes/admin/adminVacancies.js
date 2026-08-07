@@ -12,7 +12,7 @@ router.post("/", validateBody(createVacancySchema), async (req, res) => {
 
     res.status(201).json(vacancy);
   } catch (err) {
-    res.status(400).json({ message: "Validation error", error: err.message });
+    res.status(400).json({ message: "Validation error" });
   }
 });
 
@@ -25,7 +25,7 @@ router.patch("/:id", validateBody(updateVacancySchema), async (req, res) => {
 
     res.status(201).json(updatedVacancy);
   } catch (err) {
-    res.status(400).json({ message: "Validation error", error: err.message });
+    res.status(400).json({ message: "Validation error" });
   }
 });
 
@@ -41,7 +41,7 @@ router.delete("/:id", async (req, res) => {
     await Vacancy.deleteOne({ _id: req.params.id });
     res.status(200).json({ message: `Vacancy ${req.params.id} was deleted` });
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    res.status(500).json({ message: "Server error" });
   }
 });
 

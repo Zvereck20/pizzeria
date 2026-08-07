@@ -51,6 +51,9 @@ export const buildOrder = async (body) => {
     }
 
     const selectedIngredientIds = [...new Set(item.ingredients ?? [])];
+    const allowedIngredientIds = new Set(
+      product.ingredients.map((ingredientId) => ingredientId.toString()),
+    );
     const selectedIngredients = selectedIngredientIds.map((ingredientId) => {
       const ingredient = ingredientsById.get(ingredientId);
 
@@ -62,6 +65,13 @@ export const buildOrder = async (body) => {
         throw new OrderBuildError(
           409,
           `Ingredient "${ingredient.name}" is unavailable`,
+        );
+      }
+
+      if (!allowedIngredientIds.has(ingredientId)) {
+        throw new OrderBuildError(
+          400,
+          "Ingredient is not available for this product",
         );
       }
 

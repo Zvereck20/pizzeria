@@ -1,5 +1,21 @@
 import Joi from "joi";
 
+const addressSchema = Joi.object({
+  city: Joi.string().trim().allow(""),
+  street: Joi.string().trim().allow(""),
+  building: Joi.string().trim().allow(""),
+  appartment: Joi.string().allow("", null),
+  entrance: Joi.string().allow("", null),
+  floor: Joi.string().allow("", null),
+  comment: Joi.string().allow("", null),
+});
+
+const deliveryAddressSchema = addressSchema.keys({
+  city: Joi.string().trim().min(1).required(),
+  street: Joi.string().trim().min(1).required(),
+  building: Joi.string().trim().min(1).required(),
+});
+
 export const createOrderSchema = Joi.object({
   items: Joi.array()
     .items(
@@ -28,15 +44,11 @@ export const createOrderSchema = Joi.object({
     fullName: Joi.string().min(2).required(),
     phone: Joi.string().required(),
   }).required(),
-  address: Joi.object({
-    city: Joi.string().allow(""),
-    street: Joi.string().allow(""),
-    building: Joi.string().allow(""),
-    appartment: Joi.string().allow("", null),
-    entrance: Joi.string().allow("", null),
-    floor: Joi.string().allow("", null),
-    comment: Joi.string().allow("", null),
-  }).optional(),
+  address: Joi.when("orderDetails.orderType", {
+    is: "delivery",
+    then: deliveryAddressSchema.required(),
+    otherwise: Joi.any().strip(),
+  }),
 
   store: Joi.string().hex().length(24).required(),
 });

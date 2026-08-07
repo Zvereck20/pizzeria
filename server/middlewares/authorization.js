@@ -6,6 +6,6 @@ export const authorization = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error("Authorization error:", error);
+    next(error);
   }
 };
