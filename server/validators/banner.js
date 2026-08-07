@@ -12,4 +12,4 @@ export const updateBannerSchema = Joi.object({
   image: Joi.string(),
   link: Joi.string().allow(""),
   isActive: Joi.boolean(),
-});
+}).min(1);

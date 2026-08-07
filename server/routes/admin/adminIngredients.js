@@ -3,6 +3,7 @@ import Ingredient from "../../models/Ingredient.js";
 import path from "path";
 import { promises as fs } from "fs";
 import { uploadImage } from "../../middlewares/upload.js";
+import { validateObjectId } from "../../middlewares/validateObjectId.js";
 import {
   createIngredientSchema,
   updateIngredientSchema,
@@ -16,13 +17,18 @@ router.post("/", uploadImage, async (req, res) => {
     const image = req.file?.filename;
     const body = { ...req.body, image };
 
-    const { error } = createIngredientSchema.validate(body);
+    const { error, value } = createIngredientSchema.validate(body, {
+      abortEarly: false,
+    });
 
     if (error) {
-      return res.status(400).json({ message: error.message });
+      return res.status(400).json({
+        message: "Validation error",
+        details: error.details.map(({ message }) => message),
+      });
     }
 
-    const ingredient = await Ingredient.create(body);
+    const ingredient = await Ingredient.create(value);
     res.status(201).json(ingredient);
   } catch (err) {
     res.status(400).json({ message: "Validation error" });
@@ -30,22 +36,32 @@ router.post("/", uploadImage, async (req, res) => {
 });
 
 // PATCH api/admin/ingredients/id
-router.patch("/:id", uploadImage, async (req, res) => {
+router.patch("/:id", validateObjectId, uploadImage, async (req, res) => {
   try {
     const image = req.file?.filename;
     const body = { ...req.body };
 
     if (image) body.image = image;
 
-    const { error } = updateIngredientSchema.validate(body);
+    const { error, value } = updateIngredientSchema.validate(body, {
+      abortEarly: false,
+    });
 
     if (error) {
-      return res.status(400).json({ message: error.message });
+      return res.status(400).json({
+        message: "Validation error",
+        details: error.details.map(({ message }) => message),
+      });
     }
 
-    const updatedIngredient = await Ingredient.findByIdAndUpdate(req.params.id, body, {
+    const updatedIngredient = await Ingredient.findByIdAndUpdate(req.params.id, value, {
       returnDocument: "after",
     });
+
+    if (!updatedIngredient) {
+      return res.status(404).json({ message: "Ingredient not found" });
+    }
+
     res.status(201).json(updatedIngredient);
   } catch (err) {
     res.status(400).json({ message: "Validation error" });
@@ -53,12 +69,12 @@ router.patch("/:id", uploadImage, async (req, res) => {
 });
 
 // DELETE api/admin/ingredients/id
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", validateObjectId, async (req, res) => {
   try {
     const ingredient = await Ingredient.findById(req.params.id);
 
     if (!ingredient) {
-      return res.status(404).json({ message: "Ingredietn not found" });
+      return res.status(404).json({ message: "Ingredient not found" });
     }
 
     if (ingredient.image) {

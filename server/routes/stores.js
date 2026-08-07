@@ -1,5 +1,6 @@
 import express from "express";
 import Store from "../models/Store.js";
+import { validateObjectId } from "../middlewares/validateObjectId.js";
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ router.get("/", async (req, res) => {
 });
 
 // GET api/stores/id
-router.get("/:id", async (req, res) => {
+router.get("/:id", validateObjectId, async (req, res) => {
   try {
     const store = await Store.findById(req.params.id);
     if (!store) return res.status(404).json({ message: "Store not found" });

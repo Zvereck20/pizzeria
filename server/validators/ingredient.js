@@ -12,4 +12,4 @@ export const updateIngredientSchema = Joi.object({
   image: Joi.string(), // имя файла или путь
   price: Joi.number().min(0),
   available: Joi.boolean(),
-});
+}).min(1);

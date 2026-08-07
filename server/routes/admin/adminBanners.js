@@ -3,6 +3,7 @@ import Banner from "../../models/Banner.js";
 import path from "path";
 import { promises as fs } from "fs";
 import { uploadImage } from "../../middlewares/upload.js";
+import { validateObjectId } from "../../middlewares/validateObjectId.js";
 import { createBannerSchema, updateBannerSchema } from "../../validators/banner.js";
 
 const router = express.Router();
@@ -13,13 +14,18 @@ router.post("/", uploadImage, async (req, res) => {
     const image = req.file?.filename;
     const body = { ...req.body, image };
 
-    const { error } = createBannerSchema.validate(body);
+    const { error, value } = createBannerSchema.validate(body, {
+      abortEarly: false,
+    });
 
     if (error) {
-      return res.status(400).json({ message: error.message });
+      return res.status(400).json({
+        message: "Validation error",
+        details: error.details.map(({ message }) => message),
+      });
     }
 
-    const banner = await Banner.create(body);
+    const banner = await Banner.create(value);
     res.status(201).json(banner);
   } catch (err) {
     res.status(400).json({ message: "Validation error" });
@@ -27,22 +33,32 @@ router.post("/", uploadImage, async (req, res) => {
 });
 
 // PATCH api/admin/banners/id
-router.patch("/:id", uploadImage, async (req, res) => {
+router.patch("/:id", validateObjectId, uploadImage, async (req, res) => {
   try {
     const image = req.file?.filename;
     const body = { ...req.body };
 
     if (image) body.image = image;
 
-    const { error } = updateBannerSchema.validate(body);
+    const { error, value } = updateBannerSchema.validate(body, {
+      abortEarly: false,
+    });
 
     if (error) {
-      return res.status(400).json({ message: error.message });
+      return res.status(400).json({
+        message: "Validation error",
+        details: error.details.map(({ message }) => message),
+      });
     }
 
-    const updatedBanner = await Banner.findByIdAndUpdate(req.params.id, body, {
+    const updatedBanner = await Banner.findByIdAndUpdate(req.params.id, value, {
       returnDocument: "after",
     });
+
+    if (!updatedBanner) {
+      return res.status(404).json({ message: "Banner not found" });
+    }
+
     res.status(201).json(updatedBanner);
   } catch (err) {
     res.status(400).json({ message: "Validation error" });
@@ -50,7 +66,7 @@ router.patch("/:id", uploadImage, async (req, res) => {
 });
 
 // DELETE api/admin/banners/id
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", validateObjectId, async (req, res) => {
   try {
     const banner = await Banner.findById(req.params.id);
 

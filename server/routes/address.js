@@ -1,10 +1,25 @@
 import express from "express";
+import Joi from "joi";
 
 const router = express.Router();
+const addressQuerySchema = Joi.object({
+  query: Joi.string().trim().max(200).allow("").default(""),
+}).unknown(true);
 
 router.get("/suggest", async (req, res, next) => {
   try {
-    const query = (req.query.query ?? "").toString();
+    const { error, value } = addressQuerySchema.validate(req.query, {
+      abortEarly: false,
+    });
+
+    if (error) {
+      return res.status(400).json({
+        message: "Validation error",
+        details: error.details.map(({ message }) => message),
+      });
+    }
+
+    const query = value.query;
 
     if (!query.trim()) {
       return res.json({ suggestions: [] });
