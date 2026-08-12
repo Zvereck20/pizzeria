@@ -26,24 +26,24 @@ router.patch(
   validateObjectId,
   validateBody(updateStoreSchema),
   async (req, res) => {
-  try {
-    const updatedStore = await Store.findByIdAndUpdate(
-      req.params.id,
-      { ...req.body },
-      { returnDocument: "after", runValidators: true },
-    );
+    try {
+      const updatedStore = await Store.findByIdAndUpdate(
+        req.params.id,
+        { ...req.body },
+        { returnDocument: "after", runValidators: true },
+      );
 
-    if (!updatedStore) {
-      return res.status(404).json({ message: "Store not found" });
+      if (!updatedStore) {
+        return res.status(404).json({ message: "Store not found" });
+      }
+
+      res.status(200).json(updatedStore);
+    } catch (err) {
+      const status = err.name === "ValidationError" ? 400 : 500;
+      res.status(status).json({
+        message: status === 400 ? "Validation error" : "Server error",
+      });
     }
-
-    res.status(200).json(updatedStore);
-  } catch (err) {
-    const status = err.name === "ValidationError" ? 400 : 500;
-    res.status(status).json({
-      message: status === 400 ? "Validation error" : "Server error",
-    });
-  }
   },
 );
 

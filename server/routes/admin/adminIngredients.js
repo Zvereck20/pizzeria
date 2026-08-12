@@ -1,8 +1,8 @@
 import express from "express";
-import Ingredient from "../../models/Ingredient.js";
-import Product from "../../models/Product.js";
 import path from "path";
 import { promises as fs } from "fs";
+import Ingredient from "../../models/Ingredient.js";
+import Product from "../../models/Product.js";
 import { uploadImage } from "../../middlewares/upload.js";
 import { validateObjectId } from "../../middlewares/validateObjectId.js";
 import {
@@ -85,6 +85,12 @@ router.delete("/:id", validateObjectId, async (req, res) => {
       return res.status(404).json({ message: "Ingredient not found" });
     }
 
+    await Product.updateMany(
+      { ingredients: ingredient._id },
+      { $pull: { ingredients: ingredient._id } },
+    );
+    await ingredient.deleteOne();
+
     if (ingredient.image) {
       const filePath = path.resolve("uploads", ingredient.image);
 
@@ -95,11 +101,6 @@ router.delete("/:id", validateObjectId, async (req, res) => {
       }
     }
 
-    await Product.updateMany(
-      { ingredients: ingredient._id },
-      { $pull: { ingredients: ingredient._id } },
-    );
-    await ingredient.deleteOne();
     res.status(200).json({ message: `Ingredient ${req.params.id} was deleted` });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
