@@ -7,7 +7,7 @@ const router = express.Router();
 // GET api/vacancies
 router.get("/", async (req, res) => {
   try {
-    const vacancies = await Vacancy.find();
+    const vacancies = await Vacancy.find().lean();
 
     res.json(vacancies);
   } catch (err) {
@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
 // GET api/vacancies/id
 router.get("/:id", validateObjectId, async (req, res) => {
   try {
-    const vacancy = await Vacancy.findById(req.params.id);
+    const vacancy = await Vacancy.findById(req.params.id).lean();
 
     if (!vacancy) return res.status(404).json({ message: "Vacancy not found" });
 

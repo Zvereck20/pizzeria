@@ -18,9 +18,9 @@ export const buildOrder = async (body) => {
   ];
 
   const [products, ingredients, store] = await Promise.all([
-    Product.find({ _id: { $in: productIds } }),
-    Ingredient.find({ _id: { $in: ingredientIds } }),
-    Store.findById(body.store),
+    Product.find({ _id: { $in: productIds } }).lean(),
+    Ingredient.find({ _id: { $in: ingredientIds } }).lean(),
+    Store.findById(body.store).lean(),
   ]);
 
   const productsById = new Map(

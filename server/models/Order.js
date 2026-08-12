@@ -86,11 +86,16 @@ const OrderSchema = new mongoose.Schema(
       comment: String,
     },
     store: { type: mongoose.Schema.Types.ObjectId, ref: "Store", required: true },
-    number: Number,
+    number: {
+      type: Number,
+      unique: true,
+    },
   },
   { timestamps: true },
 );
 
 OrderSchema.plugin(AutoIncrement, { inc_field: "number" });
+OrderSchema.index({ createdAt: -1 });
+OrderSchema.index({ store: 1 });
 
 export default mongoose.model("Order", OrderSchema);

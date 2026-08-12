@@ -8,7 +8,7 @@ const router = express.Router();
 // GET api/banners
 router.get("/", async (req, res) => {
   try {
-    const banners = await Banner.find();
+    const banners = await Banner.find().lean();
 
     const data = banners.map((p) =>
       mapImages(p, req, [
@@ -26,7 +26,7 @@ router.get("/", async (req, res) => {
 // GET api/banners/id
 router.get("/:id", validateObjectId, async (req, res) => {
   try {
-    const banner = await Banner.findById(req.params.id);
+    const banner = await Banner.findById(req.params.id).lean();
 
     if (!banner) return res.status(404).json({ message: "Banner not found" });
 

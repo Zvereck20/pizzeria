@@ -60,7 +60,10 @@ router.post("/", uploadImage, async (req, res) => {
     const product = await Product.create(value);
     res.status(201).json(product);
   } catch (err) {
-    res.status(400).json({ message: "Validation error" });
+    const status = err instanceof SyntaxError || err.name === "ValidationError" ? 400 : 500;
+    res.status(status).json({
+      message: status === 400 ? "Validation error" : "Server error",
+    });
   }
 });
 
@@ -89,15 +92,19 @@ router.patch("/:id", validateObjectId, uploadImage, async (req, res) => {
 
     const updatedProduct = await Product.findByIdAndUpdate(req.params.id, value, {
       returnDocument: "after",
+      runValidators: true,
     });
 
     if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    res.status(201).json(updatedProduct);
+    res.status(200).json(updatedProduct);
   } catch (err) {
-    res.status(400).json({ message: "Validation error" });
+    const status = err instanceof SyntaxError || err.name === "ValidationError" ? 400 : 500;
+    res.status(status).json({
+      message: status === 400 ? "Validation error" : "Server error",
+    });
   }
 });
 

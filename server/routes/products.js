@@ -8,7 +8,7 @@ const router = express.Router();
 // GET api/products
 router.get("/", async (req, res) => {
   try {
-    const products = await Product.find().populate("ingredients");
+    const products = await Product.find().populate("ingredients").lean();
 
     const data = products.map((p) =>
       mapImages(p, req, [
@@ -26,7 +26,9 @@ router.get("/", async (req, res) => {
 // GET api/products/id
 router.get("/:id", validateObjectId, async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate("ingredients");
+    const product = await Product.findById(req.params.id)
+      .populate("ingredients")
+      .lean();
 
     if (!product) return res.status(404).json({ message: "Product not found" });
 

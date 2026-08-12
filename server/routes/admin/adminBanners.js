@@ -28,7 +28,10 @@ router.post("/", uploadImage, async (req, res) => {
     const banner = await Banner.create(value);
     res.status(201).json(banner);
   } catch (err) {
-    res.status(400).json({ message: "Validation error" });
+    const status = err instanceof SyntaxError || err.name === "ValidationError" ? 400 : 500;
+    res.status(status).json({
+      message: status === 400 ? "Validation error" : "Server error",
+    });
   }
 });
 
@@ -53,15 +56,19 @@ router.patch("/:id", validateObjectId, uploadImage, async (req, res) => {
 
     const updatedBanner = await Banner.findByIdAndUpdate(req.params.id, value, {
       returnDocument: "after",
+      runValidators: true,
     });
 
     if (!updatedBanner) {
       return res.status(404).json({ message: "Banner not found" });
     }
 
-    res.status(201).json(updatedBanner);
+    res.status(200).json(updatedBanner);
   } catch (err) {
-    res.status(400).json({ message: "Validation error" });
+    const status = err instanceof SyntaxError || err.name === "ValidationError" ? 400 : 500;
+    res.status(status).json({
+      message: status === 400 ? "Validation error" : "Server error",
+    });
   }
 });
 

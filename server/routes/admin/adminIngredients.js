@@ -1,5 +1,6 @@
 import express from "express";
 import Ingredient from "../../models/Ingredient.js";
+import Product from "../../models/Product.js";
 import path from "path";
 import { promises as fs } from "fs";
 import { uploadImage } from "../../middlewares/upload.js";
@@ -31,7 +32,10 @@ router.post("/", uploadImage, async (req, res) => {
     const ingredient = await Ingredient.create(value);
     res.status(201).json(ingredient);
   } catch (err) {
-    res.status(400).json({ message: "Validation error" });
+    const status = err instanceof SyntaxError || err.name === "ValidationError" ? 400 : 500;
+    res.status(status).json({
+      message: status === 400 ? "Validation error" : "Server error",
+    });
   }
 });
 
@@ -56,15 +60,19 @@ router.patch("/:id", validateObjectId, uploadImage, async (req, res) => {
 
     const updatedIngredient = await Ingredient.findByIdAndUpdate(req.params.id, value, {
       returnDocument: "after",
+      runValidators: true,
     });
 
     if (!updatedIngredient) {
       return res.status(404).json({ message: "Ingredient not found" });
     }
 
-    res.status(201).json(updatedIngredient);
+    res.status(200).json(updatedIngredient);
   } catch (err) {
-    res.status(400).json({ message: "Validation error" });
+    const status = err instanceof SyntaxError || err.name === "ValidationError" ? 400 : 500;
+    res.status(status).json({
+      message: status === 400 ? "Validation error" : "Server error",
+    });
   }
 });
 
@@ -87,10 +95,14 @@ router.delete("/:id", validateObjectId, async (req, res) => {
       }
     }
 
+    await Product.updateMany(
+      { ingredients: ingredient._id },
+      { $pull: { ingredients: ingredient._id } },
+    );
     await ingredient.deleteOne();
     res.status(200).json({ message: `Ingredient ${req.params.id} was deleted` });
   } catch (err) {
-    res.status(400).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 });
 
