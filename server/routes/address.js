@@ -4,7 +4,7 @@ import Joi from "joi";
 const router = express.Router();
 const addressQuerySchema = Joi.object({
   query: Joi.string().trim().max(200).allow("").default(""),
-}).unknown(true);
+});
 
 router.get("/suggest", async (req, res, next) => {
   try {

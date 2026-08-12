@@ -9,7 +9,7 @@ export const createStoreSchema = Joi.object({
   geo: Joi.object({
     lat: Joi.number().required(),
     lan: Joi.number().required(),
-  }),
+  }).min(1),
   isActive: Joi.boolean().optional(),
 }).min(1);
 
@@ -22,6 +22,6 @@ export const updateStoreSchema = Joi.object({
   geo: Joi.object({
     lat: Joi.number(),
     lan: Joi.number(),
-  }),
+  }).min(1),
   isActive: Joi.boolean().optional(),
 }).min(1);
