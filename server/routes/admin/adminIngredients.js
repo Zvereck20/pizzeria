@@ -1,6 +1,4 @@
 import express from "express";
-import path from "path";
-import { promises as fs } from "fs";
 import Ingredient from "../../models/Ingredient.js";
 import Product from "../../models/Product.js";
 import { uploadImage } from "../../middlewares/upload.js";
@@ -9,20 +7,21 @@ import {
   createIngredientSchema,
   updateIngredientSchema,
 } from "../../validators/ingredient.js";
+import { removeUploadedFile } from "../../utils/files.js";
 
 const router = express.Router();
 
-// POST api/admin/ingredients
 router.post("/", uploadImage, async (req, res) => {
-  try {
-    const image = req.file?.filename;
-    const body = { ...req.body, image };
+  const image = req.file?.filename;
 
-    const { error, value } = createIngredientSchema.validate(body, {
-      abortEarly: false,
-    });
+  try {
+    const { error, value } = createIngredientSchema.validate(
+      { ...req.body, image },
+      { abortEarly: false },
+    );
 
     if (error) {
+      await removeUploadedFile(image);
       return res.status(400).json({
         message: "Validation error",
         details: error.details.map(({ message }) => message),
@@ -32,19 +31,21 @@ router.post("/", uploadImage, async (req, res) => {
     const ingredient = await Ingredient.create(value);
     res.status(201).json(ingredient);
   } catch (err) {
-    const status = err instanceof SyntaxError || err.name === "ValidationError" ? 400 : 500;
+    await removeUploadedFile(image);
+    const status =
+      err instanceof SyntaxError || err.name === "ValidationError" ? 400 : 500;
     res.status(status).json({
       message: status === 400 ? "Validation error" : "Server error",
     });
   }
 });
 
-// PATCH api/admin/ingredients/id
 router.patch("/:id", validateObjectId, uploadImage, async (req, res) => {
-  try {
-    const image = req.file?.filename;
-    const body = { ...req.body };
+  const image = req.file?.filename;
 
+  try {
+    const body = { ...req.body };
+    delete body.image;
     if (image) body.image = image;
 
     const { error, value } = updateIngredientSchema.validate(body, {
@@ -52,35 +53,48 @@ router.patch("/:id", validateObjectId, uploadImage, async (req, res) => {
     });
 
     if (error) {
+      await removeUploadedFile(image);
       return res.status(400).json({
         message: "Validation error",
         details: error.details.map(({ message }) => message),
       });
     }
 
-    const updatedIngredient = await Ingredient.findByIdAndUpdate(req.params.id, value, {
-      returnDocument: "after",
-      runValidators: true,
-    });
+    const ingredient = await Ingredient.findById(req.params.id);
+    if (!ingredient) {
+      await removeUploadedFile(image);
+      return res.status(404).json({ message: "Ingredient not found" });
+    }
+
+    const updatedIngredient = await Ingredient.findByIdAndUpdate(
+      req.params.id,
+      value,
+      { returnDocument: "after", runValidators: true },
+    );
 
     if (!updatedIngredient) {
+      await removeUploadedFile(image);
       return res.status(404).json({ message: "Ingredient not found" });
+    }
+
+    if (image && ingredient.image !== image) {
+      await removeUploadedFile(ingredient.image);
     }
 
     res.status(200).json(updatedIngredient);
   } catch (err) {
-    const status = err instanceof SyntaxError || err.name === "ValidationError" ? 400 : 500;
+    await removeUploadedFile(image);
+    const status =
+      err instanceof SyntaxError || err.name === "ValidationError" ? 400 : 500;
     res.status(status).json({
       message: status === 400 ? "Validation error" : "Server error",
     });
   }
 });
 
-// DELETE api/admin/ingredients/id
 router.delete("/:id", validateObjectId, async (req, res) => {
   try {
     const ingredient = await Ingredient.findById(req.params.id);
-
     if (!ingredient) {
       return res.status(404).json({ message: "Ingredient not found" });
     }
@@ -90,16 +104,7 @@ router.delete("/:id", validateObjectId, async (req, res) => {
       { $pull: { ingredients: ingredient._id } },
     );
     await ingredient.deleteOne();
-
-    if (ingredient.image) {
-      const filePath = path.resolve("uploads", ingredient.image);
-
-      try {
-        await fs.unlink(filePath);
-      } catch (err) {
-        console.warn(`Cannot remove file: ${filePath}`, err.message);
-      }
-    }
+    await removeUploadedFile(ingredient.image);
 
     res.status(200).json({ message: `Ingredient ${req.params.id} was deleted` });
   } catch (err) {

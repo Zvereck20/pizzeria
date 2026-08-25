@@ -1,24 +1,23 @@
 import express from "express";
 import Banner from "../../models/Banner.js";
-import path from "path";
-import { promises as fs } from "fs";
 import { uploadImage } from "../../middlewares/upload.js";
 import { validateObjectId } from "../../middlewares/validateObjectId.js";
 import { createBannerSchema, updateBannerSchema } from "../../validators/banner.js";
+import { removeUploadedFile } from "../../utils/files.js";
 
 const router = express.Router();
 
-// POST api/admin/banners
 router.post("/", uploadImage, async (req, res) => {
-  try {
-    const image = req.file?.filename;
-    const body = { ...req.body, image };
+  const image = req.file?.filename;
 
-    const { error, value } = createBannerSchema.validate(body, {
-      abortEarly: false,
-    });
+  try {
+    const { error, value } = createBannerSchema.validate(
+      { ...req.body, image },
+      { abortEarly: false },
+    );
 
     if (error) {
+      await removeUploadedFile(image);
       return res.status(400).json({
         message: "Validation error",
         details: error.details.map(({ message }) => message),
@@ -28,19 +27,21 @@ router.post("/", uploadImage, async (req, res) => {
     const banner = await Banner.create(value);
     res.status(201).json(banner);
   } catch (err) {
-    const status = err instanceof SyntaxError || err.name === "ValidationError" ? 400 : 500;
+    await removeUploadedFile(image);
+    const status =
+      err instanceof SyntaxError || err.name === "ValidationError" ? 400 : 500;
     res.status(status).json({
       message: status === 400 ? "Validation error" : "Server error",
     });
   }
 });
 
-// PATCH api/admin/banners/id
 router.patch("/:id", validateObjectId, uploadImage, async (req, res) => {
-  try {
-    const image = req.file?.filename;
-    const body = { ...req.body };
+  const image = req.file?.filename;
 
+  try {
+    const body = { ...req.body };
+    delete body.image;
     if (image) body.image = image;
 
     const { error, value } = updateBannerSchema.validate(body, {
@@ -48,10 +49,17 @@ router.patch("/:id", validateObjectId, uploadImage, async (req, res) => {
     });
 
     if (error) {
+      await removeUploadedFile(image);
       return res.status(400).json({
         message: "Validation error",
         details: error.details.map(({ message }) => message),
       });
+    }
+
+    const banner = await Banner.findById(req.params.id);
+    if (!banner) {
+      await removeUploadedFile(image);
+      return res.status(404).json({ message: "Banner not found" });
     }
 
     const updatedBanner = await Banner.findByIdAndUpdate(req.params.id, value, {
@@ -60,37 +68,34 @@ router.patch("/:id", validateObjectId, uploadImage, async (req, res) => {
     });
 
     if (!updatedBanner) {
+      await removeUploadedFile(image);
       return res.status(404).json({ message: "Banner not found" });
+    }
+
+    if (image && banner.image !== image) {
+      await removeUploadedFile(banner.image);
     }
 
     res.status(200).json(updatedBanner);
   } catch (err) {
-    const status = err instanceof SyntaxError || err.name === "ValidationError" ? 400 : 500;
+    await removeUploadedFile(image);
+    const status =
+      err instanceof SyntaxError || err.name === "ValidationError" ? 400 : 500;
     res.status(status).json({
       message: status === 400 ? "Validation error" : "Server error",
     });
   }
 });
 
-// DELETE api/admin/banners/id
 router.delete("/:id", validateObjectId, async (req, res) => {
   try {
     const banner = await Banner.findById(req.params.id);
-
     if (!banner) {
       return res.status(404).json({ message: "Banner not found" });
     }
 
-    if (banner.image) {
-      const filePath = path.resolve("uploads", banner.image);
-
-      try {
-        await fs.unlink(filePath);
-      } catch (err) {
-        console.warn(`⚠ Не удалось удалить файл: ${filePath}`, err.message);
-      }
-    }
-    await Banner.deleteOne({ _id: req.params.id });
+    await banner.deleteOne();
+    await removeUploadedFile(banner.image);
     res.status(200).json({ message: `Banner ${req.params.id} was deleted` });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
