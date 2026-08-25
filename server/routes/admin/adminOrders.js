@@ -9,7 +9,7 @@ const router = express.Router();
 // GET api/admin/orders
 router.get("/", async (req, res) => {
   try {
-    const orders = await Order.find().sort({ createdAt: -1 });
+    const orders = await Order.find().sort({ createdAt: -1 }).lean();
 
     res.json(orders);
   } catch (err) {
@@ -25,7 +25,7 @@ router.get("/:id", async (req, res) => {
   }
 
   try {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.id).lean();
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });

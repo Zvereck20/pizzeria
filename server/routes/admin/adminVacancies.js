@@ -13,7 +13,10 @@ router.post("/", validateBody(createVacancySchema), async (req, res) => {
 
     res.status(201).json(vacancy);
   } catch (err) {
-    res.status(400).json({ message: "Validation error" });
+    const status = err.name === "ValidationError" ? 400 : 500;
+    res.status(status).json({
+      message: status === 400 ? "Validation error" : "Server error",
+    });
   }
 });
 
@@ -26,15 +29,19 @@ router.patch(
   try {
     const updatedVacancy = await Vacancy.findByIdAndUpdate(req.params.id, req.body, {
       returnDocument: "after",
+      runValidators: true,
     });
 
     if (!updatedVacancy) {
       return res.status(404).json({ message: "Vacancy not found" });
     }
 
-    res.status(201).json(updatedVacancy);
+    res.status(200).json(updatedVacancy);
   } catch (err) {
-    res.status(400).json({ message: "Validation error" });
+    const status = err.name === "ValidationError" ? 400 : 500;
+    res.status(status).json({
+      message: status === 400 ? "Validation error" : "Server error",
+    });
   }
   },
 );
