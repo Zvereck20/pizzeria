@@ -4,6 +4,7 @@ import { uploadImage } from "../../middlewares/upload.js";
 import { validateObjectId } from "../../middlewares/validateObjectId.js";
 import { createProductSchema, updateProductSchema } from "../../validators/product.js";
 import { removeUploadedFile } from "../../utils/files.js";
+import { mapImages } from "../../utils/mapImages.js";
 
 const router = express.Router();
 
@@ -23,6 +24,36 @@ const parseInformation = (information) => {
   if (typeof information !== "string") return information;
   return JSON.parse(information);
 };
+
+const productImageMapping = [
+  { path: "", field: "image" },
+  { path: "ingredients", field: "image" },
+];
+
+router.get("/", async (req, res) => {
+  try {
+    const products = await Product.find().populate("ingredients").lean();
+    res.json(products.map((product) => mapImages(product, req, productImageMapping)));
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/:id", validateObjectId, async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id)
+      .populate("ingredients")
+      .lean();
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.json(mapImages(product, req, productImageMapping));
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 router.post("/", uploadImage, async (req, res) => {
   const image = req.file?.filename;

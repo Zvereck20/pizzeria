@@ -6,6 +6,28 @@ import { createVacancySchema, updateVacancySchema } from "../../validators/vacan
 
 const router = express.Router();
 
+router.get("/", async (req, res) => {
+  try {
+    const vacancies = await Vacancy.find().lean();
+    res.json(vacancies);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/:id", validateObjectId, async (req, res) => {
+  try {
+    const vacancy = await Vacancy.findById(req.params.id).lean();
+    if (!vacancy) {
+      return res.status(404).json({ message: "Vacancy not found" });
+    }
+
+    res.json(vacancy);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // POST api/admin/vacancies
 router.post("/", validateBody(createVacancySchema), async (req, res) => {
   try {

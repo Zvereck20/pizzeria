@@ -7,6 +7,28 @@ import { createStoreSchema, updateStoreSchema } from "../../validators/store.js"
 
 const router = express.Router();
 
+router.get("/", async (req, res) => {
+  try {
+    const stores = await Store.find().sort({ createdAt: -1 }).lean();
+    res.json(stores);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/:id", validateObjectId, async (req, res) => {
+  try {
+    const store = await Store.findById(req.params.id).lean();
+    if (!store) {
+      return res.status(404).json({ message: "Store not found" });
+    }
+
+    res.json(store);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // POST api/admin/stores
 router.post("/", validateBody(createStoreSchema), async (req, res) => {
   try {

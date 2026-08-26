@@ -13,11 +13,11 @@ import {
 } from "@mui/material";
 import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
 import { AdminPageState } from "@/admin/ui/common/AdminPageState";
-import { useGetBannersQuery } from "@/features/banners";
+import { useGetAdminBannersQuery } from "@/features/banners";
 
 export const AdminBannersPage: FC = () => {
   const [search, setSearch] = useState("");
-  const { data: banners = [], isLoading, isError } = useGetBannersQuery();
+  const { data: banners = [], isLoading, isError } = useGetAdminBannersQuery();
   const filteredBanners = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
 

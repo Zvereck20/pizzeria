@@ -13,11 +13,11 @@ import {
 } from "@mui/material";
 import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
 import { AdminPageState } from "@/admin/ui/common/AdminPageState";
-import { useGetIngredientsQuery } from "@/features/ingredients";
+import { useGetAdminIngredientsQuery } from "@/features/ingredients";
 
 export const AdminIngredientsPage: FC = () => {
   const [search, setSearch] = useState("");
-  const { data: ingredients = [], isLoading, isError } = useGetIngredientsQuery();
+  const { data: ingredients = [], isLoading, isError } = useGetAdminIngredientsQuery();
 
   const filteredIngredients = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();

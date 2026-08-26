@@ -4,8 +4,35 @@ import { uploadImage } from "../../middlewares/upload.js";
 import { validateObjectId } from "../../middlewares/validateObjectId.js";
 import { createBannerSchema, updateBannerSchema } from "../../validators/banner.js";
 import { removeUploadedFile } from "../../utils/files.js";
+import { mapImages } from "../../utils/mapImages.js";
 
 const router = express.Router();
+
+router.get("/", async (req, res) => {
+  try {
+    const banners = await Banner.find().lean();
+    res.json(
+      banners.map((banner) =>
+        mapImages(banner, req, [{ path: "", field: "image" }]),
+      ),
+    );
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/:id", validateObjectId, async (req, res) => {
+  try {
+    const banner = await Banner.findById(req.params.id).lean();
+    if (!banner) {
+      return res.status(404).json({ message: "Banner not found" });
+    }
+
+    res.json(mapImages(banner, req, [{ path: "", field: "image" }]));
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 router.post("/", uploadImage, async (req, res) => {
   const image = req.file?.filename;

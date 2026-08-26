@@ -13,11 +13,11 @@ import {
 } from "@mui/material";
 import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
 import { AdminPageState } from "@/admin/ui/common/AdminPageState";
-import { useGetStoresQuery } from "@/features/stores";
+import { useGetAdminStoresQuery } from "@/features/stores";
 
 export const AdminStoresPage: FC = () => {
   const [search, setSearch] = useState("");
-  const { data: stores = [], isLoading, isError } = useGetStoresQuery();
+  const { data: stores = [], isLoading, isError } = useGetAdminStoresQuery();
 
   const filteredStores = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();

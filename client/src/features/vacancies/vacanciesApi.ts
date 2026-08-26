@@ -16,6 +16,14 @@ const vacanciesApi = api.injectEndpoints({
       query: (id) => `/vacancies/${id}`,
       providesTags: ["Vacancies"],
     }),
+    getAdminVacancies: build.query<Vacancy[], void>({
+      query: () => "/admin/vacancies",
+      providesTags: ["Vacancies"],
+    }),
+    getAdminVacancyById: build.query<Vacancy, string>({
+      query: (id) => `/admin/vacancies/${id}`,
+      providesTags: ["Vacancies"],
+    }),
     createVacancy: build.mutation<Vacancy, VacancyRequest>({
       query: (body) => ({
         url: "/admin/vacancies",
@@ -46,6 +54,8 @@ const vacanciesApi = api.injectEndpoints({
 export const {
   useGetVacanciesQuery,
   useGetVacancyByIdQuery,
+  useGetAdminVacanciesQuery,
+  useGetAdminVacancyByIdQuery,
   useCreateVacancyMutation,
   useUpdateVacancyMutation,
   useDeleteVacancyMutation,

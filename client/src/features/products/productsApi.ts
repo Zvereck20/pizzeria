@@ -17,6 +17,14 @@ const productsApi = api.injectEndpoints({
       query: (id) => `/products/${id}`,
       providesTags: ["Products"],
     }),
+    getAdminProducts: build.query<Product[], void>({
+      query: () => "/admin/products",
+      providesTags: ["Products"],
+    }),
+    getAdminProductById: build.query<Product, string>({
+      query: (id) => `/admin/products/${id}`,
+      providesTags: ["Products"],
+    }),
     createProduct: build.mutation<ProductMutationResponse, FormData>({
       query: (body) => ({
         url: "/admin/products",
@@ -47,6 +55,8 @@ const productsApi = api.injectEndpoints({
 export const {
   useGetProductsQuery,
   useGetProductByIdQuery,
+  useGetAdminProductsQuery,
+  useGetAdminProductByIdQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,

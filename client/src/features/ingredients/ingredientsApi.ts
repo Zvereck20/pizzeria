@@ -12,6 +12,14 @@ const ingredientsApi = api.injectEndpoints({
       query: (id) => `/ingredients/${id}`,
       providesTags: ["Ingredients"],
     }),
+    getAdminIngredients: build.query<Ingredient[], void>({
+      query: () => "/admin/ingredients",
+      providesTags: ["Ingredients"],
+    }),
+    getAdminIngredientById: build.query<Ingredient, string>({
+      query: (id) => `/admin/ingredients/${id}`,
+      providesTags: ["Ingredients"],
+    }),
     createIngredient: build.mutation<Ingredient, FormData>({
       query: (body) => ({
         url: "/admin/ingredients",
@@ -42,6 +50,8 @@ const ingredientsApi = api.injectEndpoints({
 export const {
   useGetIngredientsQuery,
   useGetIngredientByIdQuery,
+  useGetAdminIngredientsQuery,
+  useGetAdminIngredientByIdQuery,
   useCreateIngredientMutation,
   useUpdateIngredientMutation,
   useDeleteIngredientMutation,

@@ -12,6 +12,14 @@ const storeApi = api.injectEndpoints({
       query: (id) => `/stores/${id}`,
       providesTags: ["Stores"],
     }),
+    getAdminStores: build.query<Store[], void>({
+      query: () => "/admin/stores",
+      providesTags: ["Stores"],
+    }),
+    getAdminStoreById: build.query<Store, string>({
+      query: (id) => `/admin/stores/${id}`,
+      providesTags: ["Stores"],
+    }),
     createStore: build.mutation<Store, StoreRequest>({
       query: (body) => ({
         url: "/admin/stores",
@@ -42,6 +50,8 @@ const storeApi = api.injectEndpoints({
 export const {
   useGetStoresQuery,
   useGetStoreByIdQuery,
+  useGetAdminStoresQuery,
+  useGetAdminStoreByIdQuery,
   useCreateStoreMutation,
   useUpdateStoreMutation,
   useDeleteStoreMutation,

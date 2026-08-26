@@ -12,7 +12,7 @@ import { getApiErrorMessage } from "@/admin/utils/getApiErrorMessage";
 import {
   useCreateIngredientMutation,
   useDeleteIngredientMutation,
-  useGetIngredientByIdQuery,
+  useGetAdminIngredientByIdQuery,
   useUpdateIngredientMutation,
 } from "@/features/ingredients";
 
@@ -30,7 +30,7 @@ export const AdminIngredientDetailsPage: FC = () => {
     data: ingredient,
     isLoading,
     isError,
-  } = useGetIngredientByIdQuery(ingredientId || "", {
+  } = useGetAdminIngredientByIdQuery(ingredientId || "", {
     skip: !ingredientId,
   });
 

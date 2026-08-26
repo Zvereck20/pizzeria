@@ -12,7 +12,7 @@ import { getApiErrorMessage } from "@/admin/utils/getApiErrorMessage";
 import {
   useCreateBannerMutation,
   useDeleteBannerMutation,
-  useGetBannerByIdQuery,
+  useGetAdminBannerByIdQuery,
   useUpdateBannerMutation,
 } from "@/features/banners";
 
@@ -23,7 +23,7 @@ export const AdminBannerDetailsPage: FC = () => {
   const bannerId = isCreateMode ? undefined : id;
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [imageErrorMessage, setImageErrorMessage] = useState("");
-  const { data: banner, isLoading, isError } = useGetBannerByIdQuery(bannerId || "", {
+  const { data: banner, isLoading, isError } = useGetAdminBannerByIdQuery(bannerId || "", {
     skip: !bannerId,
   });
   const [createBanner, { isLoading: isCreating }] = useCreateBannerMutation();
