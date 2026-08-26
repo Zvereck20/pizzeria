@@ -28,7 +28,6 @@ router.get("/:id", validateObjectId, async (req, res) => {
   }
 });
 
-// POST api/admin/vacancies
 router.post("/", validateBody(createVacancySchema), async (req, res) => {
   try {
     const vacancy = await Vacancy.create(req.body);
@@ -42,33 +41,32 @@ router.post("/", validateBody(createVacancySchema), async (req, res) => {
   }
 });
 
-// PATCH api/admin/vacancies/id
 router.patch(
   "/:id",
   validateObjectId,
   validateBody(updateVacancySchema),
   async (req, res) => {
-  try {
-    const updatedVacancy = await Vacancy.findByIdAndUpdate(req.params.id, req.body, {
-      returnDocument: "after",
-      runValidators: true,
-    });
+    try {
+      const updatedVacancy = await Vacancy.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { returnDocument: "after", runValidators: true },
+      );
 
-    if (!updatedVacancy) {
-      return res.status(404).json({ message: "Vacancy not found" });
+      if (!updatedVacancy) {
+        return res.status(404).json({ message: "Vacancy not found" });
+      }
+
+      res.status(200).json(updatedVacancy);
+    } catch (err) {
+      const status = err.name === "ValidationError" ? 400 : 500;
+      res.status(status).json({
+        message: status === 400 ? "Validation error" : "Server error",
+      });
     }
-
-    res.status(200).json(updatedVacancy);
-  } catch (err) {
-    const status = err.name === "ValidationError" ? 400 : 500;
-    res.status(status).json({
-      message: status === 400 ? "Validation error" : "Server error",
-    });
-  }
   },
 );
 
-// DELETE api/admin/vacancies/id
 router.delete("/:id", validateObjectId, async (req, res) => {
   try {
     const vacancy = await Vacancy.findById(req.params.id);

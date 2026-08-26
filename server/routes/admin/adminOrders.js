@@ -1,12 +1,11 @@
 import express from "express";
-import mongoose from "mongoose";
 import Order from "../../models/Order.js";
 import { validateBody } from "../../middlewares/validateBody.js";
+import { validateObjectId } from "../../middlewares/validateObjectId.js";
 import { updateOrderStatusSchema } from "../../validators/order.js";
 
 const router = express.Router();
 
-// GET api/admin/orders
 router.get("/", async (req, res) => {
   try {
     const orders = await Order.find().sort({ createdAt: -1 }).lean();
@@ -18,12 +17,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET api/admin/orders/id
-router.get("/:id", async (req, res) => {
-  if (!mongoose.isValidObjectId(req.params.id)) {
-    return res.status(400).json({ message: "Invalid order id" });
-  }
-
+router.get("/:id", validateObjectId, async (req, res) => {
   try {
     const order = await Order.findById(req.params.id).lean();
 
@@ -38,36 +32,31 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// PATCH api/admin/orders/id
-router.patch("/:id", validateBody(updateOrderStatusSchema), async (req, res) => {
-  if (!mongoose.isValidObjectId(req.params.id)) {
-    return res.status(400).json({ message: "Invalid order id" });
-  }
+router.patch(
+  "/:id",
+  validateObjectId,
+  validateBody(updateOrderStatusSchema),
+  async (req, res) => {
+    try {
+      const updatedOrder = await Order.findByIdAndUpdate(
+        req.params.id,
+        { status: req.body.status },
+        { returnDocument: "after", runValidators: true },
+      );
 
-  try {
-    const updatedOrder = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status: req.body.status },
-      { returnDocument: "after", runValidators: true },
-    );
+      if (!updatedOrder) {
+        return res.status(404).json({ message: "Order not found" });
+      }
 
-    if (!updatedOrder) {
-      return res.status(404).json({ message: "Order not found" });
+      res.json(updatedOrder);
+    } catch (err) {
+      console.error("Order update failed");
+      res.status(500).json({ message: "Server error" });
     }
+  },
+);
 
-    res.json(updatedOrder);
-  } catch (err) {
-    console.error("Order update failed");
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-// DELETE api/admin/orders/id
-router.delete("/:id", async (req, res) => {
-  if (!mongoose.isValidObjectId(req.params.id)) {
-    return res.status(400).json({ message: "Invalid order id" });
-  }
-
+router.delete("/:id", validateObjectId, async (req, res) => {
   try {
     const deletedOrder = await Order.findByIdAndDelete(req.params.id);
 
