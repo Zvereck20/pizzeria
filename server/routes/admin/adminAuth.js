@@ -15,7 +15,6 @@ const loginLimiter = rateLimit({
   message: { message: "Too many login attempts. Try again later." },
 });
 
-// POST api/admin
 router.post("/", loginLimiter, validateBody(adminLoginSchema), (req, res, next) => {
   try {
     const { login, password } = req.body;

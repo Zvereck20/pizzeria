@@ -5,7 +5,6 @@ import { validateObjectId } from "../middlewares/validateObjectId.js";
 
 const router = express.Router();
 
-// GET api/banners
 router.get("/", async (req, res) => {
   try {
     const banners = await Banner.find({ isActive: true }).lean();
@@ -23,7 +22,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET api/banners/id
 router.get("/:id", validateObjectId, async (req, res) => {
   try {
     const banner = await Banner.findOne({

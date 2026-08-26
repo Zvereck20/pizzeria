@@ -29,7 +29,6 @@ router.get("/:id", validateObjectId, async (req, res) => {
   }
 });
 
-// POST api/admin/stores
 router.post("/", validateBody(createStoreSchema), async (req, res) => {
   try {
     const store = await Store.create(req.body);
@@ -42,7 +41,6 @@ router.post("/", validateBody(createStoreSchema), async (req, res) => {
   }
 });
 
-// PATCH api/admin/stores/id
 router.patch(
   "/:id",
   validateObjectId,
@@ -69,7 +67,6 @@ router.patch(
   },
 );
 
-// DELETE api/admin/stores/id
 router.delete("/:id", validateObjectId, async (req, res) => {
   try {
     const hasOrders = await Order.exists({ store: req.params.id });
