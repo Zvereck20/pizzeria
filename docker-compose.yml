@@ -2,16 +2,22 @@ services:
   mongo:
     image: mongo
     container_name: mongo
-    restart: always
+    restart: unless-stopped
     ports:
       - '27017:27017'
     volumes:
       - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   server:
     build: ./server
     container_name: server
-    restart: always
+    restart: unless-stopped
     working_dir: /app
     ports:
       - '5000:5000'
@@ -20,7 +26,8 @@ services:
       - server-node-modules:/app/node_modules
       - ./server/uploads:/app/uploads
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
     env_file:
       - ./server/.env
     environment:
