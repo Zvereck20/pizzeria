@@ -9,11 +9,11 @@ import {
   type ProductFormValues,
 } from "@/admin/utils/buildProductFormData";
 import { getApiErrorMessage } from "@/admin/utils/getApiErrorMessage";
-import { useGetIngredientsQuery } from "@/features/ingredients";
+import { useGetAdminIngredientsQuery } from "@/features/ingredients";
 import {
   useCreateProductMutation,
   useDeleteProductMutation,
-  useGetProductByIdQuery,
+  useGetAdminProductByIdQuery,
   useUpdateProductMutation,
 } from "@/features/products";
 
@@ -31,14 +31,14 @@ export const AdminProductDetailsPage: FC = () => {
     data: product,
     isLoading: isProductLoading,
     isError: isProductError,
-  } = useGetProductByIdQuery(productId || "", {
+  } = useGetAdminProductByIdQuery(productId || "", {
     skip: !productId,
   });
   const {
     data: ingredients = [],
     isLoading: isIngredientsLoading,
     isError: isIngredientsError,
-  } = useGetIngredientsQuery();
+  } = useGetAdminIngredientsQuery();
 
   const [createProduct, { isLoading: isCreating }] = useCreateProductMutation();
   const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();

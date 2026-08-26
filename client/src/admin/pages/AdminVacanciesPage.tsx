@@ -13,11 +13,11 @@ import {
 } from "@mui/material";
 import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
 import { AdminPageState } from "@/admin/ui/common/AdminPageState";
-import { useGetVacanciesQuery } from "@/features/vacancies";
+import { useGetAdminVacanciesQuery } from "@/features/vacancies";
 
 export const AdminVacanciesPage: FC = () => {
   const [search, setSearch] = useState("");
-  const { data: vacancies = [], isLoading, isError } = useGetVacanciesQuery();
+  const { data: vacancies = [], isLoading, isError } = useGetAdminVacanciesQuery();
   const filteredVacancies = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
 

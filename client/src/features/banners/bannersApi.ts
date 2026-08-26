@@ -11,6 +11,14 @@ const bannersApi = api.injectEndpoints({
       query: (id) => `/banners/${id}`,
       providesTags: ["Banners"],
     }),
+    getAdminBanners: build.query<Banner[], void>({
+      query: () => "/admin/banners",
+      providesTags: ["Banners"],
+    }),
+    getAdminBannerById: build.query<Banner, string>({
+      query: (id) => `/admin/banners/${id}`,
+      providesTags: ["Banners"],
+    }),
     createBanner: build.mutation<Banner, FormData>({
       query: (body) => ({
         url: "/admin/banners",
@@ -41,6 +49,8 @@ const bannersApi = api.injectEndpoints({
 export const {
   useGetBannersQuery,
   useGetBannerByIdQuery,
+  useGetAdminBannersQuery,
+  useGetAdminBannerByIdQuery,
   useCreateBannerMutation,
   useUpdateBannerMutation,
   useDeleteBannerMutation,

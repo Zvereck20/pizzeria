@@ -7,7 +7,7 @@ import { VacancyDetailsForm } from "@/admin/ui/vacancy/VacancyDetailsForm";
 import {
   useCreateVacancyMutation,
   useDeleteVacancyMutation,
-  useGetVacancyByIdQuery,
+  useGetAdminVacancyByIdQuery,
   useUpdateVacancyMutation,
   type VacancyRequest,
 } from "@/features/vacancies";
@@ -18,7 +18,7 @@ export const AdminVacancyDetailsPage: FC = () => {
   const isCreateMode = id === "new";
   const vacancyId = isCreateMode ? undefined : id;
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const { data: vacancy, isLoading, isError } = useGetVacancyByIdQuery(vacancyId || "", {
+  const { data: vacancy, isLoading, isError } = useGetAdminVacancyByIdQuery(vacancyId || "", {
     skip: !vacancyId,
   });
   const [createVacancy, { isLoading: isCreating }] = useCreateVacancyMutation();

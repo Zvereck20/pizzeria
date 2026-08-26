@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
 import { AdminPageState } from "@/admin/ui/common/AdminPageState";
-import { useGetProductsQuery, type Product } from "@/features/products";
+import { useGetAdminProductsQuery, type Product } from "@/features/products";
 
 interface ProductsByCategory {
   category: Product["category"];
@@ -45,7 +45,7 @@ const sortProductsByPrice = (products: Product[], priceSort: PriceSort) => {
 export const AdminProductsPage: FC = () => {
   const [search, setSearch] = useState("");
   const [priceSort, setPriceSort] = useState<PriceSort>("standard");
-  const { data: products = [], isLoading, isError } = useGetProductsQuery();
+  const { data: products = [], isLoading, isError } = useGetAdminProductsQuery();
 
   const productsByCategory = useMemo<ProductsByCategory[]>(() => {
     const normalizedSearch = search.trim().toLowerCase();

@@ -14,7 +14,7 @@ import { AdminPageHeader } from "@/admin/ui/common/AdminPageHeader";
 import {
   useCreateStoreMutation,
   useDeleteStoreMutation,
-  useGetStoreByIdQuery,
+  useGetAdminStoreByIdQuery,
   useUpdateStoreMutation,
   type StoreRequest,
 } from "@/features/stores";
@@ -29,7 +29,7 @@ export const AdminStoreDetailsPage: FC = () => {
     data: store,
     isLoading,
     isError,
-  } = useGetStoreByIdQuery(storeId || "", {
+  } = useGetAdminStoreByIdQuery(storeId || "", {
     skip: !storeId,
   });
   const [createStore, { isLoading: isCreating }] = useCreateStoreMutation();

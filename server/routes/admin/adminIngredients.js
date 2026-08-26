@@ -8,8 +8,35 @@ import {
   updateIngredientSchema,
 } from "../../validators/ingredient.js";
 import { removeUploadedFile } from "../../utils/files.js";
+import { mapImages } from "../../utils/mapImages.js";
 
 const router = express.Router();
+
+router.get("/", async (req, res) => {
+  try {
+    const ingredients = await Ingredient.find().lean();
+    res.json(
+      ingredients.map((ingredient) =>
+        mapImages(ingredient, req, [{ path: "", field: "image" }]),
+      ),
+    );
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/:id", validateObjectId, async (req, res) => {
+  try {
+    const ingredient = await Ingredient.findById(req.params.id).lean();
+    if (!ingredient) {
+      return res.status(404).json({ message: "Ingredient not found" });
+    }
+
+    res.json(mapImages(ingredient, req, [{ path: "", field: "image" }]));
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 router.post("/", uploadImage, async (req, res) => {
   const image = req.file?.filename;
