@@ -7,7 +7,6 @@ import { sendOrderNotification } from "../utils/mail.js";
 
 const router = express.Router();
 
-// POST api/orders
 router.post("/", validateBody(createOrderSchema), async (req, res) => {
   try {
     const orderData = await buildOrder(req.body);

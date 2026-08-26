@@ -5,7 +5,6 @@ import { validateObjectId } from "../middlewares/validateObjectId.js";
 
 const router = express.Router();
 
-// GET api/products
 router.get("/", async (req, res) => {
   try {
     const products = await Product.find({ available: true })
@@ -25,7 +24,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET api/products/id
 router.get("/:id", validateObjectId, async (req, res) => {
   try {
     const product = await Product.findOne({

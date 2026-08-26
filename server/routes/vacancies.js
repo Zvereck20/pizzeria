@@ -4,7 +4,6 @@ import { validateObjectId } from "../middlewares/validateObjectId.js";
 
 const router = express.Router();
 
-// GET api/vacancies
 router.get("/", async (req, res) => {
   try {
     const vacancies = await Vacancy.find({ isActive: true }).lean();
@@ -15,7 +14,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET api/vacancies/id
 router.get("/:id", validateObjectId, async (req, res) => {
   try {
     const vacancy = await Vacancy.findOne({
