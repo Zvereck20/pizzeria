@@ -7,6 +7,7 @@ import {
   createStore,
   validOrderPayload,
 } from "./helpers.js";
+import Order from "../models/Order.js";
 
 const adminAgent = async () => {
   const agent = request.agent(app);
@@ -65,12 +66,19 @@ describe("public and admin catalog visibility", () => {
     const hiddenProduct = await request(app).get(
       `/api/products/${unavailableProduct._id}`,
     );
+    const missingProduct = await request(app).get(
+      "/api/products/507f1f77bcf86cd799439011",
+    );
     const adminList = await agent.get("/api/admin/products");
     const adminProduct = await agent.get(
       `/api/admin/products/${availableProduct._id}`,
     );
+    const unavailableAdminProduct = await agent.get(
+      `/api/admin/products/${unavailableProduct._id}`,
+    );
 
     expect(publicList.status).toBe(200);
+    expect(publicProduct.status).toBe(200);
     expect(publicList.body.map(({ _id }) => _id)).toContain(
       availableProduct._id.toString(),
     );
@@ -81,6 +89,7 @@ describe("public and admin catalog visibility", () => {
       availableIngredient._id.toString(),
     ]);
     expect(hiddenProduct.status).toBe(404);
+    expect(missingProduct.status).toBe(404);
     expect(adminList.body.map(({ _id }) => _id)).toEqual(
       expect.arrayContaining([
         availableProduct._id.toString(),
@@ -93,6 +102,8 @@ describe("public and admin catalog visibility", () => {
         unavailableIngredient._id.toString(),
       ]),
     );
+    expect(unavailableAdminProduct.status).toBe(200);
+    expect(unavailableAdminProduct.body._id).toBe(unavailableProduct._id.toString());
   });
 
   test("uses public filters for ingredients and stores only", async () => {
@@ -142,12 +153,16 @@ describe("admin validation", () => {
 
     const invalidCreate = await agent.post("/api/admin/stores").send({ name: "x" });
     const emptyPatch = await agent.patch(`/api/admin/stores/${store._id}`).send({});
+    const invalidPatch = await agent
+      .patch(`/api/admin/stores/${store._id}`)
+      .send({ name: "x" });
     const missingPatch = await agent.patch(`/api/admin/stores/${missingId}`).send({
       isActive: false,
     });
 
     expect(invalidCreate.status).toBe(400);
     expect(emptyPatch.status).toBe(400);
+    expect(invalidPatch.status).toBe(400);
     expect(missingPatch.status).toBe(404);
   });
 });
@@ -165,10 +180,17 @@ describe("orders", () => {
     expect(response.body.totalPrice).toBe(900);
     expect(response.body.items[0].unitPrice).toBe(450);
     expect(response.body.status).toBe("pending");
+
+    const createdOrder = await Order.findById(response.body._id).lean();
+
+    expect(createdOrder.totalPrice).toBe(900);
+    expect(createdOrder.items[0].unitPrice).toBe(450);
+    expect(createdOrder.status).toBe("pending");
   });
 
   test("rejects unavailable products, inactive stores, and missing products", async () => {
     const unavailableProduct = await createProduct({ available: false });
+    const availableProduct = await createProduct();
     const inactiveStore = await createStore({ isActive: false });
     const activeStore = await createStore();
 
@@ -177,7 +199,7 @@ describe("orders", () => {
       .send(validOrderPayload(unavailableProduct, activeStore));
     const inactiveStoreResponse = await request(app)
       .post("/api/orders")
-      .send(validOrderPayload(unavailableProduct, inactiveStore));
+      .send(validOrderPayload(availableProduct, inactiveStore));
     const missingProductResponse = await request(app)
       .post("/api/orders")
       .send(
