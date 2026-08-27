@@ -121,6 +121,10 @@ describe("public and admin catalog visibility", () => {
     const hiddenStore = await request(app).get(`/api/stores/${inactiveStore._id}`);
     const adminIngredients = await agent.get("/api/admin/ingredients");
     const adminStores = await agent.get("/api/admin/stores");
+    const adminIngredient = await agent.get(
+      `/api/admin/ingredients/${unavailableIngredient._id}`,
+    );
+    const adminStore = await agent.get(`/api/admin/stores/${inactiveStore._id}`);
 
     expect(publicIngredients.body.map(({ _id }) => _id)).toContain(
       availableIngredient._id.toString(),
@@ -136,6 +140,10 @@ describe("public and admin catalog visibility", () => {
       unavailableIngredient._id.toString(),
     );
     expect(adminStores.body.map(({ _id }) => _id)).toContain(inactiveStore._id.toString());
+    expect(adminIngredient.status).toBe(200);
+    expect(adminIngredient.body._id).toBe(unavailableIngredient._id.toString());
+    expect(adminStore.status).toBe(200);
+    expect(adminStore.body._id).toBe(inactiveStore._id.toString());
   });
 
   test("returns 400 for malformed public object ids", async () => {
@@ -161,6 +169,9 @@ describe("admin validation", () => {
     });
 
     expect(invalidCreate.status).toBe(400);
+    expect(invalidCreate.body.message).toBe("Validation error");
+    expect(Array.isArray(invalidCreate.body.details)).toBe(true);
+    expect(invalidCreate.body.details.length).toBeGreaterThan(0);
     expect(emptyPatch.status).toBe(400);
     expect(invalidPatch.status).toBe(400);
     expect(missingPatch.status).toBe(404);
@@ -178,12 +189,14 @@ describe("orders", () => {
 
     expect(response.status).toBe(201);
     expect(response.body.totalPrice).toBe(900);
+    expect(response.body.items[0].name).toBe(product.name);
     expect(response.body.items[0].unitPrice).toBe(450);
     expect(response.body.status).toBe("pending");
 
     const createdOrder = await Order.findById(response.body._id).lean();
 
     expect(createdOrder.totalPrice).toBe(900);
+    expect(createdOrder.items[0].name).toBe(product.name);
     expect(createdOrder.items[0].unitPrice).toBe(450);
     expect(createdOrder.status).toBe("pending");
   });
@@ -214,6 +227,73 @@ describe("orders", () => {
     expect(missingProductResponse.status).toBe(404);
   });
 
+  test("rejects a missing ingredient allowed by the product", async () => {
+    const missingIngredientId = "507f1f77bcf86cd799439011";
+    const product = await createProduct({ ingredients: [missingIngredientId] });
+    const store = await createStore();
+
+    const response = await request(app)
+      .post("/api/orders")
+      .send(
+        validOrderPayload(product, store, {
+          items: [
+            {
+              productId: product._id.toString(),
+              quantity: 1,
+              ingredients: [missingIngredientId],
+            },
+          ],
+        }),
+      );
+
+    expect(response.status).toBe(404);
+  });
+
+  test("rejects an unavailable ingredient", async () => {
+    const ingredient = await createIngredient({ available: false });
+    const product = await createProduct({ ingredients: [ingredient._id] });
+    const store = await createStore();
+
+    const response = await request(app)
+      .post("/api/orders")
+      .send(
+        validOrderPayload(product, store, {
+          items: [
+            {
+              productId: product._id.toString(),
+              quantity: 1,
+              ingredients: [ingredient._id.toString()],
+            },
+          ],
+        }),
+      );
+
+    expect(response.status).toBe(409);
+    expect(response.body.message).toContain("unavailable");
+  });
+
+  test("rejects an ingredient that does not belong to the product", async () => {
+    const ingredient = await createIngredient();
+    const product = await createProduct();
+    const store = await createStore();
+
+    const response = await request(app)
+      .post("/api/orders")
+      .send(
+        validOrderPayload(product, store, {
+          items: [
+            {
+              productId: product._id.toString(),
+              quantity: 1,
+              ingredients: [ingredient._id.toString()],
+            },
+          ],
+        }),
+      );
+
+    expect(response.status).toBe(400);
+  });
+
   test("keeps order reads and updates in the admin API", async () => {
     const product = await createProduct();
     const store = await createStore();
@@ -223,7 +303,13 @@ describe("orders", () => {
     const agent = await adminAgent();
 
     const publicRead = await request(app).get("/api/orders");
+    const publicDetail = await request(app).get(
+      `/api/orders/${createResponse.body._id}`,
+    );
     const adminRead = await agent.get("/api/admin/orders");
+    const adminDetail = await agent.get(
+      `/api/admin/orders/${createResponse.body._id}`,
+    );
     const update = await agent
       .patch(`/api/admin/orders/${createResponse.body._id}`)
       .send({ status: "confirmed" });
@@ -232,8 +318,11 @@ describe("orders", () => {
       .send({ status: "invalid" });
 
     expect(publicRead.status).toBe(404);
+    expect(publicDetail.status).toBe(404);
     expect(adminRead.status).toBe(200);
     expect(adminRead.body).toHaveLength(1);
+    expect(adminDetail.status).toBe(200);
+    expect(adminDetail.body._id).toBe(createResponse.body._id);
     expect(update.status).toBe(200);
     expect(update.body.status).toBe("confirmed");
     expect(invalidUpdate.status).toBe(400);

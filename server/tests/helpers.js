@@ -50,7 +50,14 @@ export const createStore = (overrides = {}) =>
   });
 
 export const validOrderPayload = (product, store, overrides = {}) => ({
-  items: [{ productId: product._id.toString(), quantity: 2 }],
+  items: [
+    {
+      productId: product._id.toString(),
+      quantity: 2,
+      name: "Fake product",
+      unitPrice: 1,
+    },
+  ],
   totalPrice: 1,
   status: "done",
   orderDetails: {
