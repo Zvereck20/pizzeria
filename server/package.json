@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon --legacy-watch index.js",
-    "test": "vitest run"
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "vitest run --config vitest.unit.config.js tests/unit",
+    "test:integration": "vitest run --config vitest.config.js tests/api.test.js"
   },
   "dependencies": {
     "connect-mongo": "^6.0.0",
